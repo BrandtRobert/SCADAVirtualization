@@ -1,0 +1,8 @@
+sockets:
+  simulation_timer_default:
+    type: "Timer"
+    port: 8080
+    channel_id: 8080
+    respond_to:
+      host: "localhost"
+      port: 8081
