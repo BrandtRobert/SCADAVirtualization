@@ -5,7 +5,6 @@ from threading import Thread, Event, Lock
 from collections import deque
 from typing import Dict
 import os
-import numpy as np
 
 
 class SimulinkTimer(Worker):

@@ -16,3 +16,4 @@ if __name__ == "__main__":
     args = parse_args()
     interface = SimulinkInterface(args.config)
     interface.start_server()
+

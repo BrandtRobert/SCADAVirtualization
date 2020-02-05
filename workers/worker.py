@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from datachannels import ModbusReceiver, modbusencoder
 from typing import Dict
+from logger import Logger
 import socket
 import threading
 
@@ -13,6 +14,8 @@ class Worker(ABC):
         self.attributes = attr
         self.modbus_receiver = None
         self.modbus_thread = None
+        self.logger = Logger('WorkerLogger-{}'.format(attr['port']), '../logger/logs/worker_log.txt',
+                             prefix='Worker Server {}'.format(attr['port']))
 
     @abstractmethod
     def run(self, receive_queue):
