@@ -17,8 +17,10 @@ class PressureSensor(Worker):
             while not stopped.wait(1.5):
                 self.lock.acquire()
                 if self.pressure_reading is not None:
-                    print("Pressure Reading \"{}\": {:.2f} mPA".format(self.attributes['name'],
-                                                                 self.pressure_reading / 10 ** 6))
+                    # print("Pressure Reading \"{}\": {:.2f} psi".format(self.attributes['name'],
+                    #                                              self.pressure_reading))
+                    self.logger.info("Pressure Reading \"{}\": {:.2f} psi".format(self.attributes['name'],
+                                                                                  self.pressure_reading))
                 self.lock.release()
 
         Thread(target=pp, daemon=True).start()
@@ -35,7 +37,8 @@ class PressureSensor(Worker):
         stop_flag.set()
 
     def get_reading(self):
-        if self.pressure_reading:
-            return self.pressure_reading
-        else:
-            return 0
+        with self.lock:
+            if self.pressure_reading:
+                return self.pressure_reading
+            else:
+                return 0

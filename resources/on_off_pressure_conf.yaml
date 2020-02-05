@@ -1,0 +1,63 @@
+sockets:
+# pressure sensors
+  pressure_sensor_ds_denver:
+    type: "PressureSensor"
+    port: 7070
+    channel_id: 7070
+    modbus_port: 9090
+  pressure_sensor_pp_cherokee:
+    type: "PressureSensor"
+    port: 7071
+    channel_id: 7071
+    modbus_port: 9091
+  pressure_sensor_ds_small:
+    type: "PressureSensor"
+    port: 7072
+    channel_id: 7072
+    modbus_port: 9092
+  pressure_sensor_pp_watkins:
+    type: "PressureSensor"
+    port: 7073
+    channel_id: 7073
+    modbus_port: 9093
+  pressure_sensor_pp_aux:
+    type: "PressureSensor"
+    port: 7074
+    channel_id: 7074
+    modbus_port: 9094
+  pressure_sensor_main_compressor_1:
+    type: "PressureSensor"
+    port: 7075
+    channel_id: 7075
+    modbus_port: 9095
+  pressure_sensor_main_compressor_2:
+    type: "PressureSensor"
+    port: 7076
+    channel_id: 7076
+    modbus_port: 9096
+# On off indicators
+  on_off_indicator_ds_denver:
+    type: "SimulationStopper"
+    port: 8080
+    channel_id: 8080
+    modbus_port: 9097
+  on_off_indicator_pp_cherokee:
+    type: "SimulationStopper"
+    port: 8081
+    channel_id: 8081
+    modbus_port: 9097
+  on_off_indicator_ds_small:
+    type: "SimulationStopper"
+    port: 8082
+    channel_id: 8082
+    modbus_port: 9097
+  on_off_indicator_pp_watkins:
+    type: "SimulationStopper"
+    port: 8083
+    channel_id: 8083
+    modbus_port: 9097
+  on_off_indicator_pp_aux:
+    type: "SimulationStopper"
+    port: 8084
+    channel_id: 8084
+    modbus_port: 9097

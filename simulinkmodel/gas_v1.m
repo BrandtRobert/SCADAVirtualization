@@ -35,4 +35,3 @@ op=simscape.op.create(simlog,conf.StableTime);      % capture ending state as in
 loadControlFlag="on";
 valveControlFlag="on";
 set_param(modelName,'StopTime',string(conf.StopTime));    % set time to stable with no loads
-
