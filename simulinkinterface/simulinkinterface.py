@@ -2,10 +2,12 @@ import selectors
 import yaml
 import socket
 from datachannels import PublishQueue
-from workers import PressureSensor, SimulinkTimer
+from workers import PressureSensor, SimulinkTimer, WorkerFactory
 import multiprocessing
 import os
 import struct
+import binascii
+from logger import Logger
 
 
 class SimulinkInterface:
@@ -15,6 +17,7 @@ class SimulinkInterface:
         self.selector = selectors.DefaultSelector()
         self.publish_queue = PublishQueue()
         self.udp_send_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.logger = Logger('InterfaceLogger', '../logger/logs/interface_log.txt')
 
     def read_config(self, config_path):
         with open(config_path, 'r') as stream:
@@ -36,10 +39,11 @@ class SimulinkInterface:
                 response_pipe_r, response_pipe_w = os.pipe()
                 respond_to = (attr['respond_to']['host'], attr['respond_to']['port'])
             worker = None
-            if attr['type'] == "PressureSensor":
-                worker = PressureSensor(attr, response_pipe_w)
-            if attr['type'] == "Timer":
-                worker = SimulinkTimer(attr, response_pipe_w)
+            # if attr['type'] == "PressureSensor":
+            #     worker = PressureSensor(attr, response_pipe_w)
+            # if attr['type'] == "Timer":
+            #     worker = SimulinkTimer(attr, response_pipe_w)
+            worker = WorkerFactory.create_new_worker(attr, response_pipe_w)
             if worker:
                 if response_pipe_r:
                     self.selector.register(response_pipe_r, selectors.EVENT_READ, {"connection_type": "response",
@@ -54,7 +58,7 @@ class SimulinkInterface:
                     channel_id = attr['port']
                 p = multiprocessing.Process(target=worker.run, args=(self.publish_queue.register(channel_id),))
                 self.processes.append(p)
-            print("Initializing process: {}".format(self.config[name]))
+                print("Initializing process: {}".format(self.config[name]))
 
     def _accept_connection(self, sock: socket.socket):
         conn, addr = sock.accept()
@@ -80,6 +84,7 @@ class SimulinkInterface:
 
     def _send_response(self, read_pipe, host: str, port: int):
         response_data = os.read(read_pipe, 128)
+        self.logger.info("Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
         self.udp_send_socket.sendto(response_data, (host, port))
 
     def service_connection(self, key):

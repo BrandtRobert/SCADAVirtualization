@@ -1,4 +1,11 @@
 sockets:
+  simulation_timer_default:
+    type: "Timer"
+    port: 6068
+    channel_id: 6068
+    respond_to:
+      host: 'localhost'
+      port: 6065
 # pressure sensors
   pressure_sensor_ds_denver:
     type: "PressureSensor"
@@ -41,23 +48,38 @@ sockets:
     port: 8080
     channel_id: 8080
     modbus_port: 9097
+    respond_to:
+      host: "localhost"
+      port: 6061
   on_off_indicator_pp_cherokee:
     type: "SimulationStopper"
     port: 8081
     channel_id: 8081
     modbus_port: 9097
+    respond_to:
+      host: "localhost"
+      port: 6061
   on_off_indicator_ds_small:
     type: "SimulationStopper"
     port: 8082
     channel_id: 8082
     modbus_port: 9097
+    respond_to:
+      host: "localhost"
+      port: 6061
   on_off_indicator_pp_watkins:
     type: "SimulationStopper"
     port: 8083
     channel_id: 8083
     modbus_port: 9097
+    respond_to:
+      host: "localhost"
+      port: 6061
   on_off_indicator_pp_aux:
     type: "SimulationStopper"
     port: 8084
     channel_id: 8084
     modbus_port: 9097
+    respond_to:
+      host: "localhost"
+      port: 6061
