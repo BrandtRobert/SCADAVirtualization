@@ -1,4 +1,4 @@
-from workers import Worker
+from model.workers import Worker
 from threading import Lock
 import struct
 import os

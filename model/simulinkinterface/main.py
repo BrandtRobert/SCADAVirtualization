@@ -1,4 +1,4 @@
-from simulinkinterface import SimulinkInterface
+from model.simulinkinterface import SimulinkInterface
 import argparse
 import sys
 

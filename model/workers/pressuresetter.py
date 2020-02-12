@@ -1,4 +1,4 @@
-from workers import Worker
+from model.workers import Worker
 import os
 import struct
 

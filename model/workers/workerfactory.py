@@ -1,4 +1,4 @@
-from workers import *
+from model.workers import *
 
 
 class WorkerFactory:

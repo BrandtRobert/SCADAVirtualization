@@ -1,6 +1,6 @@
 import struct
 import time
-from workers import Worker
+from model.workers import Worker
 from threading import Thread, Event, Lock
 from collections import deque
 from typing import Dict

@@ -1,8 +1,9 @@
 from abc import ABC
 from abc import abstractmethod
-from datachannels import ModbusReceiver, modbusencoder
+from model.datachannels import ModbusReceiver
+from model.datachannels import modbusencoder
 from typing import Dict
-from logger import Logger
+from model.logger import Logger
 import socket
 import threading
 
@@ -39,7 +40,7 @@ class Worker(ABC):
             print('received request:{}'.format(request_body))
             print('Sending reading:{}'.format(self.get_reading()))
             return modbusencoder.respond_read_registers(request_header, [(float(self.get_reading()), 'FLOAT32')],
-                                                 endianness=ENDIANNESS)
+                                                        endianness=ENDIANNESS)
         DEVICE_FUNCTION_CODES = [3, 4, 6, 16]
         self.modbus_receiver = ModbusReceiver(port, device_function_codes=DEVICE_FUNCTION_CODES,
                                               socket_type=socket.SOCK_DGRAM)

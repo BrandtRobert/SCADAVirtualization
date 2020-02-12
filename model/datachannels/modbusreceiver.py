@@ -5,8 +5,8 @@ from typing import Callable
 import threading
 from typing import Dict
 from time import sleep
-from datachannels import modbusdecoder
-from logger import Logger, StatisticsCollector
+from model.datachannels import modbusdecoder
+from model.logger import Logger, StatisticsCollector
 from binascii import hexlify
 
 class ModbusReceiver:

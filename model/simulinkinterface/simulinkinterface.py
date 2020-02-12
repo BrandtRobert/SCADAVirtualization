@@ -1,13 +1,13 @@
 import selectors
 import yaml
 import socket
-from datachannels import PublishQueue
-from workers import PressureSensor, SimulinkTimer, WorkerFactory
+from model.datachannels import PublishQueue
+from model.workers import WorkerFactory
 import multiprocessing
 import os
 import struct
 import binascii
-from logger import Logger
+from model.logger import Logger
 
 
 class SimulinkInterface:
