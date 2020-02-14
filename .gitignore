@@ -1,3 +1,5 @@
 model/logger/logs
 .idea/
 venv
+frontend/scada/node_modules
+frontend/scada/package-lock.json
