@@ -1,12 +1,11 @@
 from .worker import Worker
-from threading import Thread, Lock, Event
+from threading import Thread, Event
 
 
 class PressureSensor(Worker):
 
     def __init__(self, attr, response_pipe_w):
         Worker.__init__(self, attr, response_pipe_w)
-        self.lock = Lock()
         self.pressure_reading = None
 
     def print_pressure_reading(self):
@@ -28,12 +27,9 @@ class PressureSensor(Worker):
 
     def run(self, receive_queue):
         stop_flag = self.print_pressure_reading()
-        self.start_modbus_server(port=self.attributes['modbus_port'])
         for item in iter(receive_queue.get, None):
-            self.lock.acquire()
-            self.pressure_reading = item[1]
-            self.lock.release()
-            # print("PS {} received a new message {}".format(self.attributes['name'], item))
+            with self.lock:
+                self.pressure_reading = item[1]
         stop_flag.set()
 
     def get_reading(self):

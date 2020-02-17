@@ -1,5 +1,5 @@
 from model.workers import Worker
-from threading import Lock
+from threading import RLock
 import struct
 import os
 
@@ -9,18 +9,18 @@ class SimulationStopper(Worker):
     def __init__(self, attr, pipe):
         Worker.__init__(self, attr, pipe)
         self.is_tripped = 1
-        self.stop_lock = Lock()
 
     def run(self, receive_queue):
         for item in iter(receive_queue.get, None):
-            with self.stop_lock:
-                self.is_tripped = item[1]
-                if self.is_tripped == 0:
-                    print("Item {} tripped off".format(self.attributes['name']))
+            with self.lock:
+                # Stop firing events after initial trip
+                if item[1] == 0 and self.is_tripped == 1:
+                    self.logger.warning("ITEM [{}] tripped off... Stopping simulation".format(self.attributes['name']))
                     response = struct.pack(">d", 1)
                     os.write(self.pipe, response)
+                    self.is_tripped = 0
 
     def get_reading(self):
-        with Lock:
+        with self.lock:
             return self.is_tripped
 

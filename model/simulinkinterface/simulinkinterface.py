@@ -3,6 +3,7 @@ import yaml
 import socket
 from model.datachannels import PublishQueue
 from model.workers import WorkerFactory
+from model.plc import LogicController
 import multiprocessing
 import os
 import struct
@@ -12,7 +13,7 @@ from model.logger import Logger
 
 class SimulinkInterface:
     def __init__(self, config_path):
-        self.processes = []
+        self.controller_ps = []
         self.config = self.read_config(config_path)
         self.selector = selectors.DefaultSelector()
         self.publish_queue = PublishQueue()
@@ -20,57 +21,58 @@ class SimulinkInterface:
         self.logger = Logger('InterfaceLogger', '../logger/logs/interface_log.txt')
 
     def read_config(self, config_path):
+        """
+            Read and parse the .yaml configuration file.
+        :param config_path: the path to the specific yaml file
+        :return:
+        """
         with open(config_path, 'r') as stream:
             try:
-                config_yaml = yaml.safe_load(stream)['sockets']
+                config_yaml = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
                 exit(1)
         return config_yaml
 
-    def create_workers(self):
-        for name, attr in self.config.items():
-            attr['name'] = name
-            # serverfd.listen(5)
-            response_pipe_r = None
-            response_pipe_w = None
-            respond_to = None
-            if attr.get('respond_to', None):
-                response_pipe_r, response_pipe_w = os.pipe()
-                respond_to = (attr['respond_to']['host'], attr['respond_to']['port'])
-            worker = None
-            # if attr['type'] == "PressureSensor":
-            #     worker = PressureSensor(attr, response_pipe_w)
-            # if attr['type'] == "Timer":
-            #     worker = SimulinkTimer(attr, response_pipe_w)
-            worker = WorkerFactory.create_new_worker(attr, response_pipe_w)
-            if worker:
-                if response_pipe_r:
-                    self.selector.register(response_pipe_r, selectors.EVENT_READ, {"connection_type": "response",
-                                                                                   "respond_to": respond_to})
-                channel_id = None
-                if attr.get('port', None):
-                    serverfd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                    serverfd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                    serverfd.bind(('', attr['port']))
-                    self.selector.register(serverfd, selectors.EVENT_READ, {"connection_type": "server_socket",
-                                                                            "channel": attr['port']})
-                    channel_id = attr['port']
-                p = multiprocessing.Process(target=worker.run, args=(self.publish_queue.register(channel_id),))
-                self.processes.append(p)
-                print("Initializing process: {}".format(self.config[name]))
+    def create_plcs(self):
+        """
+            Creates PLC(s) based on the .yaml configuration file.
+            Each PLC spawns several "worker" processes which listen for incoming simulink data
+                through a predefined publish / subscribe mechanism.
+            The register_workers function creates the server sockets for each worker, and registers them to
+            the main selector. These workers also subscribe to receive the data coming to their "listening port"
+            by registering themselves with the publish queue.
+        :return:
+        """
+        for plc_name, plc_config in self.config.items():
+            controller = LogicController(plc_name, plc_config)
+            controller.register_workers(self.selector, self.publish_queue)
+            controller_ps = multiprocessing.Process(target=controller.start_plc)
+            self.controller_ps.append(controller_ps)
 
-    def _accept_connection(self, sock: socket.socket):
-        conn, addr = sock.accept()
-        print("New connection from {}".format(addr))
-        conn.setblocking(False)
-        self.selector.register(conn, selectors.EVENT_READ, {"connection_type": "client_connection",
-                                                            "channel": addr[1]})
+    # def _accept_connection(self, sock: socket.socket):
+    #     """
+    #         !!!! NO LONGER USED IN UDP Implementation !!!!
+    #         Upon receiving a new connection from simulink register this connection to our selector and
+    #         it's respective data.
+    #     :param sock:
+    #     :return:
+    #     """
+    #     conn, addr = sock.accept()
+    #     print("New connection from {}".format(addr))
+    #     conn.setblocking(False)
+    #     self.selector.register(conn, selectors.EVENT_READ, {"connection_type": "client_connection",
+    #                                                         "channel": addr[1]})
 
     def _read_and_publish(self, connection: socket, channel: str):
         """
-        |--- 64 bit simulation time --|
-        |--- 64 bit reading         --|
+            Reads data from simulink.
+            |----------------------|
+            |--- 64 bit timestamp -|
+            |--- 64 bit reading ---|
+            |----------------------|
+        :param connection: the connection from a simulink block
+        :param channel: the channel to publish this data to on the publish queue
         """
         data = connection.recv(16)  # Should be ready
         if data:
@@ -83,27 +85,48 @@ class SimulinkInterface:
             connection.close()
 
     def _send_response(self, read_pipe, host: str, port: int):
+        """
+            Reads from the worker pipe and forwards the data to the respective simulink block
+            based on the host and port specified.
+        :param read_pipe: a pipe connecting the worker thread to the main simulink selector
+        :param host: ip / hostname to send data
+        :param port: port number that the host is listening on
+        :return:
+        """
         response_data = os.read(read_pipe, 128)
         self.logger.info("Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
         self.udp_send_socket.sendto(response_data, (host, port))
 
     def service_connection(self, key):
+        """
+            Based on the information in the key['connection_type'] route take the correct action.
+            For server_sockets read the data and publish to the queue.
+            For responses read the appropriate data from the response pipe and forward to simulink.
+        :param key: The key associated with the file object registered in the selector
+        :return:
+        """
         connection = key.fileobj
         connection_type = key.data['connection_type']
         if connection_type == 'server_socket':
-        #     self._accept_connection(connection)
-        # if connection_type == 'client_connection':
             channel = key.data['channel']
             self._read_and_publish(connection, channel)
         if connection_type == 'response':
             read_pipe = key.fileobj
+            # The address to respond to should be registered along with the pipe object
             host, port = key.data['respond_to']
             self._send_response(read_pipe, host, port)
 
     def start_server(self):
-        self.create_workers()
-        for p in self.processes:
-            p.start()
+        """
+            Set up the virtual PLC(s) and their respective worker processes / threads.
+            One the setup, start the PLC(s) to begin listening for data.
+            Then start the selector loop, waiting for new data and servicing incoming responses.
+        :return:
+        """
+        self.create_plcs()
+        for plc in self.controller_ps:
+            self.logger.info('Starting controller: {}'.format(plc.__str__))
+            plc.start()
 
         while True:
             events = self.selector.select()
