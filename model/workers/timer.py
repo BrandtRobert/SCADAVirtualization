@@ -12,7 +12,6 @@ class SimulinkTimer(Worker):
     def __init__(self, attr: Dict, pipe: int):
         Worker.__init__(self, attr, pipe)
         self.rtts = deque(maxlen=100)
-        self.dl = Lock()
 
     def run(self, receive_queue):
         stop_flag = self.print_data()
@@ -28,9 +27,9 @@ class SimulinkTimer(Worker):
                 r_ts2 = r_ts
                 r_ts3 = time.time()
                 rtt = r_ts3 - r_ts2
-                self.dl.acquire()
+                self.lock.acquire()
                 self.rtts.append(rtt)
-                self.dl.release()
+                self.lock.release()
                 response = struct.pack(">dd", sim_ts, r_ts3)
                 # send a response
                 os.write(self.pipe, response)
@@ -42,14 +41,14 @@ class SimulinkTimer(Worker):
         def pp():
             # the first call is in `interval` secs
             while not stopped.wait(1):
-                self.dl.acquire()
+                self.lock.acquire()
                 if len(self.rtts) > 2:
                     # print(np.random.choice(self.rtts, (50, )))
                     avg_rtt = sum(self.rtts)/len(self.rtts) * (10**2)
                     print("Mean RTT: {:2f}ms".format(avg_rtt))
-                self.dl.release()
+                self.lock.release()
         Thread(target=pp, daemon=True).start()
-        return stopped.set
+        return stopped
 
     def get_reading(self):
         return 0

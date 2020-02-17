@@ -14,6 +14,7 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
+    print('Initializing simulink interface...')
     interface = SimulinkInterface(args.config)
+    print('Starting simulink interface...')
     interface.start_server()
-

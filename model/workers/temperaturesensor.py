@@ -6,7 +6,6 @@ class TemperatureSensor(Worker):
 
     def __init__(self, attr, response_pipe_w):
         Worker.__init__(self, attr, response_pipe_w)
-        self.lock = Lock()
         self.temperature_reading = None
 
     def print_temperature_reading(self):
@@ -26,7 +25,6 @@ class TemperatureSensor(Worker):
 
     def run(self, receive_queue):
         stop_flag = self.print_temperature_reading()
-        self.start_modbus_server(port=self.attributes['modbus_port'])
         for item in iter(receive_queue.get, None):
             self.lock.acquire()
             self.temperature_reading = item[1]
