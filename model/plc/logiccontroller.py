@@ -1,6 +1,6 @@
 from typing import Dict
 from model.workers import WorkerFactory
-from model.datachannels import modbusencoder, ModbusReceiver, modbusdecoder
+from model.datachannels import modbusencoder, ModbusReceiver, FunctionCodes
 from model.logger import Logger
 import threading
 import selectors
@@ -77,18 +77,26 @@ class LogicController:
             request_header = request['header']
             request_body = request['body']
             self.logger.info("Servicing modbus request {}".format(request_header))
-            readings = []
-            for worker_name, info in self.worker_processes.items():
-                worker = info['worker']
-                self.logger.info('Retrieving data from {}'.format(worker_name))
-                readings.append((worker.get_reading(), 'FLOAT32'))
-            self.logger.info("Responding to request with {}".format(readings))
-            return modbusencoder.respond_read_registers(request_header, readings, endianness=ENDIANNESS)
+            if request_header['function_code'] == FunctionCodes.WRITE_SINGLE_HOLDING_REGISTER:
+                setting = request_body['value']
+                # We will have to change this to select worker based on the register
+                #    (we need some mapping config file though)
+                for worker_name, info in self.worker_processes.items():
+                    if "setter" in worker_name:
+                        self.logger.info("Setting new pressure reading to {} at {}".format(setting, worker_name))
+                        info['worker'].set_reading(setting)
+                return modbusencoder.respond_write_registers(request_header, 0, 1, endianness=ENDIANNESS)
+            else:
+                readings = []
+                for worker_name, info in self.worker_processes.items():
+                    worker = info['worker']
+                    self.logger.info('Retrieving data from {}'.format(worker_name))
+                    readings.append((worker.get_reading(), 'FLOAT32'))
+                self.logger.info("Responding to request with {}".format(readings))
+                return modbusencoder.respond_read_registers(request_header, readings, endianness=ENDIANNESS)
 
         DEVICE_FUNCTION_CODES = [3, 4, 6, 16]
         modbus_receiver = ModbusReceiver(port, device_function_codes=DEVICE_FUNCTION_CODES,
-                                         socket_type=socket.SOCK_STREAM)
+                                         socket_type=socket.SOCK_DGRAM)
         self.logger.info("Starting modbus server for PLC on {}".format(self.modbus_port))
         modbus_receiver.start_server(handle_request)
-        # self.modbus_thread = threading.Thread(target=self.modbus_receiver.start_server, args=(handle_request,),
-        #                                       daemon=True)

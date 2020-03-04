@@ -173,6 +173,7 @@ class ModbusReceiver:
                         # add failures to the receiver
                         if not self.simulate_failures():
                             continue
+                        print("Sending response {} to {}".format(response, address))
                         s.sendto(response, address)
                         response_stop = time.time()
                         StatisticsCollector.increment_avg_response(response_stop - response_start)

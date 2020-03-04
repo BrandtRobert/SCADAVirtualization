@@ -50,9 +50,9 @@ function [loadParm,lastLoadChange] = gasLoadParameters(conf)
     pwr=[0 5];
     pwr=[pwr; add_ramp(3600*12,rampTime,5,10)];
     pwr=[pwr; add_ramp(3600*30,rampTime,10,15)];
-    pwr=[pwr; add_ramp(3600*24*3,rampTime,15,20)];
-    pwr=[pwr; add_ramp(3600*24*4,rampTime,20,50)];
-    pwr=[pwr; add_ramp(3600*24*5,rampTime, 50,5)];
+    pwr=[pwr; add_ramp(3600*24*3,rampTime,15,10)];
+    pwr=[pwr; add_ramp(3600*24*4,rampTime,10,5)];
+    pwr=[pwr; add_ramp(3600*24*5,rampTime, 5,2)];
     loadParm=[loadParm; add_load("PP Aux 1",pwr,pNom,pCut)];
  
 

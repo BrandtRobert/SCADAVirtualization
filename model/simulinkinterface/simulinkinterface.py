@@ -125,7 +125,7 @@ class SimulinkInterface:
         """
         self.create_plcs()
         for plc in self.controller_ps:
-            self.logger.info('Starting controller: {}'.format(plc.__str__))
+            self.logger.info('Starting controller: {}'.format(plc))
             plc.start()
 
         while True:

@@ -6,7 +6,8 @@ function [lineParm,pNom] = gasLineParameters(conf)
     pNom=600;       % psia
     %% Transmission lines
     lineParm=table();
-    lineParm=[lineParm;add_line("Main 1",24,50,pNom)];
+%     lineParm=[lineParm;add_line("Main 1",24,50,pNom)];
+    lineParm=[lineParm;add_line("Main 1",48,50,pNom)];
     lineParm=[lineParm;add_line("Main 2",24,35,pNom)];
     lineParm=[lineParm;add_line("Parallel 1",20,17,pNom)];
     lineParm=[lineParm;add_line("Parallel 2",20,72,pNom)];

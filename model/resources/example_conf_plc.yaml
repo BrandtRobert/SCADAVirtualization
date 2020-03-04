@@ -73,6 +73,12 @@ main_compressor_1_plc:
       type: "PressureSensor"
       port: 7075
       channel_id: 7075
+    pressure_setter_main_compressor_1:
+      type: "PressureSetter"
+      port: 10001
+      respond_to:
+        host: 'localhost'
+        port: 6062
 main_compressor_2_plc:
   modbus_port: 9096
   workers:
@@ -80,6 +86,12 @@ main_compressor_2_plc:
       type: "PressureSensor"
       port: 7076
       channel_id: 7076
+    pressure_setter_main_compressor_2:
+      type: "PressureSetter"
+      port: 10002
+      respond_to:
+        host: 'localhost'
+        port: 6063
 oracle_plc:
   modbus_port: 9097
   workers:
