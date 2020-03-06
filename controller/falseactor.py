@@ -54,7 +54,7 @@ class FalseActor:
         main_compressor_client: ModbusClient = plcs_of_interest['main_compressor']['client']
         self.logger.debug('Starting control loop...')
         while True:
-            # time.sleep(0.1)
+            time.sleep(.200)
             # Read cherokee
             cherokee_registers = self.parse_registers(cherokee_client.read_holding_registers(0, 4).registers)
             self.logger.debug('Reading Cherokee Registers {}'.format(cherokee_registers))
@@ -67,14 +67,17 @@ class FalseActor:
             # First register is pressure
             if 0 < cherokee_registers[0] < 500:
                 pressure_setting = main_registers[-1]
+                new_setting = min(int(pressure_setting + 100), 1000)
+                # pressure_setting = 100
                 self.logger.info('Pressure at cherokee low ({} psi) updating output at main compressor to {}'
-                                 .format(cherokee_registers[0], int(pressure_setting + 100)))
-                main_compressor_client.write_register(0, int(pressure_setting + 100))
+                                 .format(cherokee_registers[0], new_setting))
+                main_compressor_client.write_register(0, new_setting)
             if 0 < aux_registers[0] < 500:
                 pressure_setting = main_registers[-1]
+                new_setting = min(int(pressure_setting + 100), 1000)
                 self.logger.info('Pressure at aux low ({} psi) updating output at main compressor to {}'
-                                 .format(aux_registers[0], pressure_setting + 100))
-                main_compressor_client.write_register(0, int(pressure_setting + 100))
+                                 .format(aux_registers[0], new_setting))
+                main_compressor_client.write_register(0, new_setting)
 
 
 if __name__ == "__main__":

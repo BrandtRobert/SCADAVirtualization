@@ -1,5 +1,6 @@
 from model.workers import *
 import os
+from model.workers.compromiseworker import CompromiseWorker
 
 
 class WorkerFactory:
@@ -8,18 +9,23 @@ class WorkerFactory:
     def create_new_worker(attr):
         response_pipe_r = None
         response_pipe_w = None
+        worker = None
         if attr.get('respond_to', None):
             response_pipe_r, response_pipe_w = os.pipe()
-
         if attr['type'] == 'Timer':
-            return SimulinkTimer(attr, response_pipe_w), response_pipe_r
+            worker = SimulinkTimer(attr, response_pipe_w)
         elif attr['type'] == 'PressureSensor':
-            return PressureSensor(attr, response_pipe_w), response_pipe_r
+            worker = PressureSensor(attr, response_pipe_w)
         elif attr['type'] == 'TemperatureSensor':
-            return TemperatureSensor(attr, response_pipe_w), response_pipe_r
+            worker = TemperatureSensor(attr, response_pipe_w)
         elif attr['type'] == 'SimulationStopper':
-            return SimulationStopper(attr, response_pipe_w), response_pipe_r
+            worker = SimulationStopper(attr, response_pipe_w)
         elif attr['type'] == 'PressureSetter':
-            return PressureSetter(attr, response_pipe_w), response_pipe_r
+            worker = PressureSetter(attr, response_pipe_w)
         else:
             return None
+        # wrap compromised workers in a compromise worker class
+        if attr.get('compromised', None):
+            return CompromiseWorker(worker, attr['compromised']), response_pipe_r
+        else:
+            return worker, response_pipe_r

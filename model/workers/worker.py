@@ -13,6 +13,7 @@ class Worker(ABC):
         self.pipe = pipe
         self.lock = RLock()
         self.attributes = attr
+        self.started = False
         self.modbus_receiver = None
         self.modbus_thread = None
         self.logger = Logger('WorkerLogger-{}'.format(attr['port']), '../logger/logs/worker_log.txt',
