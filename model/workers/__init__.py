@@ -5,3 +5,4 @@ from .timer import SimulinkTimer
 from .temperaturesensor import TemperatureSensor
 from .simulationstopper import SimulationStopper
 from .workerfactory import WorkerFactory
+from .compromiseworker import CompromiseWorker

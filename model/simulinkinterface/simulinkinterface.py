@@ -12,12 +12,13 @@ from model.logger import Logger
 
 
 class SimulinkInterface:
-    def __init__(self, config_path):
+    def __init__(self, config_path, send_port=5000):
         self.controller_ps = []
         self.config = self.read_config(config_path)
         self.selector = selectors.DefaultSelector()
         self.publish_queue = PublishQueue()
         self.udp_send_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.udp_send_socket.bind(('', send_port))
         self.logger = Logger('InterfaceLogger', '../logger/logs/interface_log.txt')
 
     def read_config(self, config_path):
@@ -32,6 +33,12 @@ class SimulinkInterface:
             except yaml.YAMLError as exc:
                 print(exc)
                 exit(1)
+        # if not config_yaml['settings']:
+        #     print("Failed to read config... no settings in file")
+        #     exit(1)
+        # if not config_yaml['settings']['send_port']:
+        #     print("Failed to read config... no send_port in settings")
+        #     exit(1)
         return config_yaml
 
     def create_plcs(self):
@@ -95,6 +102,7 @@ class SimulinkInterface:
         """
         response_data = os.read(read_pipe, 128)
         self.logger.info("Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
+        print("!!!Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
         self.udp_send_socket.sendto(response_data, (host, port))
 
     def service_connection(self, key):

@@ -5,7 +5,7 @@ from model.logger import Logger
 import threading
 import selectors
 import socket
-import multiprocessing
+from model.workers import CompromiseWorker
 
 class LogicController:
     def __init__(self, name: str, conf: Dict):
@@ -76,7 +76,7 @@ class LogicController:
             #@TODO Based on the request body respond with the appropriate worker information
             request_header = request['header']
             request_body = request['body']
-            self.logger.info("Servicing modbus request {}".format(request_header))
+            self.logger.debug("Servicing modbus request {}".format(request_header))
             if request_header['function_code'] == FunctionCodes.WRITE_SINGLE_HOLDING_REGISTER:
                 setting = request_body['value']
                 # We will have to change this to select worker based on the register
