@@ -7,7 +7,7 @@ import os
 class Logger:
 
     active_loggers = {}
-    level = logging.INFO
+    level = logging.CRITICAL
     logger_dir = '.'
 
     def __init__(self, logger_name, filename, prefix=None):

@@ -2,10 +2,11 @@ from typing import Dict
 from model.workers import WorkerFactory
 from model.datachannels import modbusencoder, ModbusReceiver, FunctionCodes
 from model.logger import Logger
+from .plcclock import PLCClock
 import threading
 import selectors
 import socket
-from model.workers import CompromiseWorker
+
 
 class LogicController:
     def __init__(self, name: str, conf: Dict):
@@ -15,6 +16,7 @@ class LogicController:
         self.worker_processes = {}
         self.setup_complete = False
         self.logger = Logger("PLCLogger", "../logger/logs/plc_log.txt", prefix="[{}]".format(self.plc_name))
+        self.clock = PLCClock()
 
     def __str__(self):
         return "{}:\n{}".format(self.plc_name, self.conf)
@@ -34,6 +36,8 @@ class LogicController:
             worker, response_pipe_r = WorkerFactory.create_new_worker(attr)
             if worker is None:
                 continue
+            # Add the clock to the workers attributes
+            attr['clock'] = self.clock
             # If this worker intends to respond to simulink then
             # Link up it's pipe to the main selector
             if response_pipe_r:

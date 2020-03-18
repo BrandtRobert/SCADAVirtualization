@@ -16,7 +16,7 @@ conf=gasConfig();
 
 %% Create stable starting point conditions - Step 1, all loads off
 % switch off all loads, and simulate
-set_param(hModel,'SimscapeUseOperatingPoints','off')
+set_param(hModel,'SimscapeUseOperatingPoints','off');
 loadControlFlag="off";
 valveControlFlag="initial";
 set_param(modelName,'StopTime',string(conf.StableTime));    % set time to stable with no loads

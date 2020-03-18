@@ -8,6 +8,8 @@ from pymodbus.client.sync import ModbusUdpClient as ModbusClient
 
 class FalseActor:
 
+    TARGET_PRESSURE_RATING = 600
+
     def __init__(self, conf: Dict):
         self.plcs = conf
         self.logger = Logger("ActorLogs", "../model/logger/logs/actors_logs.txt")
@@ -54,7 +56,7 @@ class FalseActor:
         main_compressor_client: ModbusClient = plcs_of_interest['main_compressor']['client']
         self.logger.debug('Starting control loop...')
         while True:
-            time.sleep(.200)
+            time.sleep(.04)
             # Read cherokee
             cherokee_registers = self.parse_registers(cherokee_client.read_holding_registers(0, 4).registers)
             self.logger.debug('Reading Cherokee Registers {}'.format(cherokee_registers))
@@ -65,19 +67,34 @@ class FalseActor:
             main_registers = self.parse_registers(main_compressor_client.read_holding_registers(0, 4).registers)
             self.logger.debug('Main Compressor Registers {}'.format(main_registers))
             # First register is pressure
-            if 0 < cherokee_registers[0] < 500:
-                pressure_setting = main_registers[-1]
-                new_setting = min(int(pressure_setting + 100), 1000)
-                # pressure_setting = 100
-                self.logger.info('Pressure at cherokee low ({} psi) updating output at main compressor to {}'
-                                 .format(cherokee_registers[0], new_setting))
-                main_compressor_client.write_register(0, new_setting)
-            if 0 < aux_registers[0] < 500:
-                pressure_setting = main_registers[-1]
-                new_setting = min(int(pressure_setting + 100), 1000)
-                self.logger.info('Pressure at aux low ({} psi) updating output at main compressor to {}'
-                                 .format(aux_registers[0], new_setting))
-                main_compressor_client.write_register(0, new_setting)
+            cherokee_pressure = cherokee_registers[0]
+            aux_pressure = cherokee_registers[0]
+            main_compressor_setting = main_registers[-1]
+
+            new_pressure_setting = main_compressor_setting
+            if 0 < aux_pressure < 550 or 0 < cherokee_pressure < 550:
+                new_pressure_setting = int(min(main_compressor_setting + 25, 800))
+            elif aux_pressure > 625 or cherokee_pressure > 625:
+                new_pressure_setting = int(max(main_compressor_setting - 25, 400))
+            else: # pressure is normal (550 - 650)
+                continue
+            print('Pressure out of normal range updating too', new_pressure_setting)
+            main_compressor_client.write_register(0, new_pressure_setting)
+
+
+        # if 0 < cherokee_registers[0] < 500:
+            #     pressure_setting = main_registers[-1]
+            #     new_setting = min(int(pressure_setting + 100), 1000)
+            #     # pressure_setting = 100
+            #     self.logger.info('Pressure at cherokee low ({} psi) updating output at main compressor to {}'
+            #                      .format(cherokee_registers[0], new_setting))
+            #     main_compressor_client.write_register(0, new_setting)
+            # if 0 < aux_registers[0] < 500:
+            #     pressure_setting = main_registers[-1]
+            #     new_setting = min(int(pressure_setting + 100), 1000)
+            #     self.logger.info('Pressure at aux low ({} psi) updating output at main compressor to {}'
+            #                      .format(aux_registers[0], new_setting))
+            #     main_compressor_client.write_register(0, new_setting)
 
 
 if __name__ == "__main__":
