@@ -29,6 +29,7 @@ class PressureSensor(Worker):
         stop_flag = self.print_pressure_reading()
         for item in iter(receive_queue.get, None):
             self.started = True
+            self.attributes['clock'].update_time(item[0])
             with self.lock:
                 self.pressure_reading = item[1]
         stop_flag.set()

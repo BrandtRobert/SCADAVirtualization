@@ -1,5 +1,6 @@
 from model.workers import Worker
 from typing import Dict
+from model.simulinkinterface import simtimeoracle
 import time
 
 
@@ -25,8 +26,9 @@ class CompromiseWorker(Worker):
 
     def _compromise_reading(self, reading):
         compromise_type = self.conf['reading']
-        print("Time difference at: {} waiting for: {}".format(time.time() - self.start_time, self.activate_at))
-        if time.time() - self.start_time > self.activate_at:
+        # print("Time difference at: {} waiting for: {}".format(time.time() - self.start_time, self.activate_at))
+        sim_time = self.attributes['clock'].get_time()
+        if sim_time > self.activate_at:
             print("Compromise triggered new reading: {}".format(compromise_type))
             new_reading = compromise_type
             return new_reading

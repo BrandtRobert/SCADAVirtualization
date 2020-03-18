@@ -26,6 +26,7 @@ class TemperatureSensor(Worker):
     def run(self, receive_queue):
         stop_flag = self.print_temperature_reading()
         for item in iter(receive_queue.get, None):
+            self.attributes['clock'].update_time(item[0])
             self.started = True
             self.lock.acquire()
             self.temperature_reading = item[1]

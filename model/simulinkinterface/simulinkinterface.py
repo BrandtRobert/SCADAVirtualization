@@ -2,8 +2,8 @@ import selectors
 import yaml
 import socket
 from model.datachannels import PublishQueue
-from model.workers import WorkerFactory
 from model.plc import LogicController
+from model.simulinkinterface import simtimeoracle
 import multiprocessing
 import os
 import struct
@@ -20,6 +20,7 @@ class SimulinkInterface:
         self.udp_send_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_send_socket.bind(('', send_port))
         self.logger = Logger('InterfaceLogger', '../logger/logs/interface_log.txt')
+        self.time_oracle = None
 
     def read_config(self, config_path):
         """
@@ -52,10 +53,17 @@ class SimulinkInterface:
         :return:
         """
         for plc_name, plc_config in self.config.items():
+            if plc_name == 'time_oracle':
+                continue
             controller = LogicController(plc_name, plc_config)
             controller.register_workers(self.selector, self.publish_queue)
-            controller_ps = multiprocessing.Process(target=controller.start_plc)
+            controller_ps = multiprocessing.Process(target=controller.start_plc, daemon=True, name=plc_name)
             self.controller_ps.append(controller_ps)
+
+    def init_time_oracle(self):
+        timer_conf = self.config['time_oracle']
+        time_oracle = simtimeoracle.SimulationTimeOracle(timer_conf['receive_port'], timer_conf['respond_port'])
+        return time_oracle, multiprocessing.Process(target=time_oracle.start, name='Time Oracle', daemon=True)
 
     # def _accept_connection(self, sock: socket.socket):
     #     """
@@ -102,7 +110,7 @@ class SimulinkInterface:
         """
         response_data = os.read(read_pipe, 128)
         self.logger.info("Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
-        print("!!!Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
+        # print("!!!Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
         self.udp_send_socket.sendto(response_data, (host, port))
 
     def service_connection(self, key):
@@ -127,11 +135,14 @@ class SimulinkInterface:
     def start_server(self):
         """
             Set up the virtual PLC(s) and their respective worker processes / threads.
-            One the setup, start the PLC(s) to begin listening for data.
+            Initialize the time oracle.
+            Once setup, start the PLC(s) to begin listening for data.
             Then start the selector loop, waiting for new data and servicing incoming responses.
         :return:
         """
+        self.time_oracle, time_oracle_ps = self.init_time_oracle()
         self.create_plcs()
+        time_oracle_ps.start()
         for plc in self.controller_ps:
             self.logger.info('Starting controller: {}'.format(plc))
             plc.start()

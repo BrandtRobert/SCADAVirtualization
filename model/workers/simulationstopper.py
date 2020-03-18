@@ -12,6 +12,7 @@ class SimulationStopper(Worker):
 
     def run(self, receive_queue):
         for item in iter(receive_queue.get, None):
+            self.attributes['clock'].update_clock(item[0])
             with self.lock:
                 # Stop firing events after initial trip
                 if item[1] == 0 and self.is_tripped == 1:
