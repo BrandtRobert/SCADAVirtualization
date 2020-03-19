@@ -31,9 +31,10 @@ pp_cherokee_plc:
       type: "PressureSensor"
       port: 7071
       channel_id: 7071
-#      compromised:
-#        reading: 535 # 200 psi
-#        after: 3600 # after 1 day of sim time
+      compromised:
+        hold_back: 5
+        reading: x * 1.05 # 200 psi
+        after: 3600 # after 1 day of sim time
     on_off_indicator_pp_cherokee:
       type: "SimulationStopper"
       port: 8081

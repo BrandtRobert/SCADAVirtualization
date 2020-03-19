@@ -3,6 +3,7 @@ from abc import abstractmethod
 from typing import Dict
 from model.logger import Logger
 from threading import RLock
+import collections
 
 
 class Worker(ABC):
@@ -16,6 +17,8 @@ class Worker(ABC):
         self.modbus_thread = None
         self.logger = Logger('WorkerLogger-{}'.format(attr['port']), '../logger/logs/worker_log.txt',
                              prefix='Worker Server {}'.format(attr['port']))
+        self.previous_readings = collections.deque(maxlen=10)
+        self.num_readings = 0
 
     @abstractmethod
     def run(self, receive_queue):

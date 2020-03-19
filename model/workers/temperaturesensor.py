@@ -28,9 +28,10 @@ class TemperatureSensor(Worker):
         for item in iter(receive_queue.get, None):
             self.attributes['clock'].update_time(item[0])
             self.started = True
-            self.lock.acquire()
-            self.temperature_reading = item[1]
-            self.lock.release()
+            with self.lock:
+                self.num_readings = self.num_readings + 1
+                self.previous_readings.append(item[1])
+                self.temperature_reading = item[1]
             # print("PS {} received a new message {}".format(self.attributes['name'], item))
         stop_flag.set()
 

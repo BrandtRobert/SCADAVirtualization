@@ -14,33 +14,34 @@ class FalseActor:
 
     def begin_control_loop(self):
         while True:
-            time.sleep(.1)
+            time.sleep(1)
             sensors = self.sensor_bus.get_sensor_readings()
             aux_pressure = sensors['pp_aux_plc'][0]
+            watkins_pressure = sensors['pp_watkins_plc'][0]
             cherokee_pressure = sensors['pp_cherokee_plc'][0]
-            main_compressor_setting = sensors['main_compressor_1_plc'][0]
-            if 0 < aux_pressure < 550 or 0 < cherokee_pressure < 550:
-                new_pressure_setting = int(min(main_compressor_setting + 25, 800))
-            elif aux_pressure > 625 or cherokee_pressure > 625:
-                new_pressure_setting = int(max(main_compressor_setting - 25, 400))
-            else: # pressure is normal (550 - 650)
+            main_compressor_1_setting = sensors['main_compressor_1_plc'][1]
+            main_compressor_2_setting = sensors['main_compressor_2_plc'][1]
+            main_compressor_2_p = sensors['main_compressor_2_plc'][0]
+            # main_compressor_1 = sum(differences(600, x_i)
+
+            if (main_compressor_2_p + cherokee_pressure + watkins_pressure) == 0:
                 continue
-            # print('Pressure out of normal range updating too', new_pressure_setting)
+
+            # Mean of the first downstream pressures * 1.5
+            pressure_update = \
+                1.5 * (((600 - main_compressor_2_p) + (600 - cherokee_pressure) + (600 - watkins_pressure)) / 3)
+            new_pressure_setting = int(main_compressor_1_setting + round(pressure_update))
+            # print("Updating main compressor pressure ", new_pressure_setting)
+            new_pressure_setting = min(800, max(new_pressure_setting, 400))
             self.sensor_bus.update_actuators([('main_compressor_1_plc', new_pressure_setting)])
 
-        # if 0 < cherokee_registers[0] < 500:
-            #     pressure_setting = main_registers[-1]
-            #     new_setting = min(int(pressure_setting + 100), 1000)
-            #     # pressure_setting = 100
-            #     self.logger.info('Pressure at cherokee low ({} psi) updating output at main compressor to {}'
-            #                      .format(cherokee_registers[0], new_setting))
-            #     main_compressor_client.write_register(0, new_setting)
-            # if 0 < aux_registers[0] < 500:
-            #     pressure_setting = main_registers[-1]
-            #     new_setting = min(int(pressure_setting + 100), 1000)
-            #     self.logger.info('Pressure at aux low ({} psi) updating output at main compressor to {}'
-            #                      .format(aux_registers[0], new_setting))
-            #     main_compressor_client.write_register(0, new_setting)
+            # if 0 < aux_pressure < 550 or 0 < cherokee_pressure < 550:
+            #     new_pressure_setting = int(min(main_compressor_setting + 25, 800))
+            # elif aux_pressure > 625 or cherokee_pressure > 625:
+            #     new_pressure_setting = int(max(main_compressor_setting - 25, 400))
+            # else: # pressure is normal (550 - 650)
+            #     continue
+            # print('Pressure out of normal range updating too', new_pressure_setting)
 
 
 if __name__ == "__main__":

@@ -31,6 +31,8 @@ class PressureSensor(Worker):
             self.started = True
             self.attributes['clock'].update_time(item[0])
             with self.lock:
+                self.num_readings = self.num_readings + 1
+                self.previous_readings.append(item[1])
                 self.pressure_reading = item[1]
         stop_flag.set()
 
