@@ -140,9 +140,11 @@ class SimulinkInterface:
             Then start the selector loop, waiting for new data and servicing incoming responses.
         :return:
         """
-        self.time_oracle, time_oracle_ps = self.init_time_oracle()
+        # Time oracle stuff is now manage in PLC sensors
+        # self.time_oracle, time_oracle_ps = self.init_time_oracle()
+        # time_oracle_ps.start()
+
         self.create_plcs()
-        time_oracle_ps.start()
         for plc in self.controller_ps:
             self.logger.info('Starting controller: {}'.format(plc))
             plc.start()

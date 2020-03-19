@@ -31,9 +31,9 @@ pp_cherokee_plc:
       type: "PressureSensor"
       port: 7071
       channel_id: 7071
-      compromised:
-        reading: 535 # 200 psi
-        after: 3600 # after 1 day of sim time
+#      compromised:
+#        reading: 535 # 200 psi
+#        after: 3600 # after 1 day of sim time
     on_off_indicator_pp_cherokee:
       type: "SimulationStopper"
       port: 8081
@@ -95,9 +95,9 @@ main_compressor_2_plc:
       respond_to:
         host: 'localhost'
         port: 6063
-time_oracle:
-  receive_port: 6068
-  respond_port: 6065
+#time_oracle:
+#  receive_port: 6068
+#  respond_port: 6065
 #oracle_plc:
 #  modbus_port: 9097
 #  workers:
