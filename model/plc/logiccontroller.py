@@ -33,6 +33,7 @@ class LogicController:
         for worker_name, attr in workers_conf.items():
             # Invoke the factory to create a new worker
             attr['name'] = worker_name
+            print(attr)
             worker, response_pipe_r = WorkerFactory.create_new_worker(attr)
             if worker is None:
                 continue
@@ -48,15 +49,18 @@ class LogicController:
             # A server socket will be set up for this port in the main selector
             # Data destined to this port will be parsed, packaged, and then sent to listening worker processes
             # using the publish_queue
+            port = 0
             if attr.get('port', None):
+                port = attr['port']
                 serverfd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 serverfd.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 serverfd.bind(('', attr['port']))
                 selector.register(serverfd, selectors.EVENT_READ,
                                   {"connection_type": "server_socket", "channel": attr['port']})
-            # Unsure whether creation of thread or starting a thread attaches it to the parent ps
-            # If there are performance issues in the simulink interface you can investigate this
-            p = threading.Thread(target=worker.run, args=(publish_queue.register(attr['port']),))
+                # Unsure whether creation of thread or starting a thread attaches it to the parent ps
+                # If there are performance issues in the simulink interface you can investigate this
+            channel = attr.get('channel', port)
+            p = threading.Thread(target=worker.run, args=(publish_queue.register(channel),))
             self.worker_processes[worker_name] = {
                 "process": p,
                 "attributes": attr,

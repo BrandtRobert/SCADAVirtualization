@@ -1,6 +1,8 @@
 from model.workers import *
 import os
 from model.workers.compromiseworker import CompromiseWorker
+from model.workers.defaultsensor import DefaultSensor
+from model.workers.defaultactuator import DefaultActuator
 
 
 class WorkerFactory:
@@ -22,6 +24,10 @@ class WorkerFactory:
             worker = SimulationStopper(attr, response_pipe_w)
         elif attr['type'] == 'PressureSetter':
             worker = PressureSetter(attr, response_pipe_w)
+        elif attr['type'] == 'DefaultActuator':
+            worker = DefaultActuator(attr, response_pipe_w)
+        elif attr['type'] == 'DefaultSensor':
+            worker = DefaultSensor(attr, response_pipe_w)
         else:
             return None
         # wrap compromised workers in a compromise worker class

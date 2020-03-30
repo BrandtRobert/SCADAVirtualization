@@ -16,9 +16,9 @@ class SimulinkTimer(Worker):
         self.time_ratio = 0
 
     def run(self, receive_queue):
-        # stop_flag = self.print_data()
         for item in iter(receive_queue.get, None):
             sim_ts, r_ts = item[0], float(item[1])
+            self.attributes['clock'].update_time(sim_ts)
             # initial condition
             if r_ts == 0:
                 r_ts2 = time.time()
@@ -38,20 +38,6 @@ class SimulinkTimer(Worker):
                 response = struct.pack(">dd", sim_ts, r_ts3)
                 # send a response
                 os.write(self.pipe, response)
-        # stop_flag.set()
-
-    def print_data(self):
-        stopped = Event()
-
-        def pp():
-            # the first call is in `interval` secs
-            while not stopped.wait(1):
-                self.lock.acquire()
-                if len(self.rtts) > 2:
-                    print("Time ratio: {:.2f}ms to sim seconds".format(self.time_ratio * 10**3))
-                self.lock.release()
-        Thread(target=pp, daemon=True).start()
-        return stopped
 
     def get_reading(self):
         with self.lock:

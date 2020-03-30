@@ -24,7 +24,7 @@ class TemperatureSensor(Worker):
         return stopped
 
     def run(self, receive_queue):
-        stop_flag = self.print_temperature_reading()
+        # stop_flag = self.print_temperature_reading()
         for item in iter(receive_queue.get, None):
             self.attributes['clock'].update_time(item[0])
             self.started = True
@@ -32,8 +32,10 @@ class TemperatureSensor(Worker):
                 self.num_readings = self.num_readings + 1
                 self.previous_readings.append(item[1])
                 self.temperature_reading = item[1]
+                # if self.pressure_reading < self.attributes.get('trip_setting', -1):
+                #     os.write(self.pipe, struct.pack('>d', 1))
             # print("PS {} received a new message {}".format(self.attributes['name'], item))
-        stop_flag.set()
+        # stop_flag.set()
 
     def get_reading(self):
         if self.temperature_reading:

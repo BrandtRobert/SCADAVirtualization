@@ -1,0 +1,35 @@
+main_compressor_plc:
+  modbus_port: 9090
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8070
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 8071
+    pressure_setter:
+      type: "DefaultActuator"
+      respond_to:
+        host: "localhost"
+        port: 9069
+main_power_plant:
+  modbus_port: 9091
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 7070
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 7071
+    pressure_trip:
+      type: "DefaultActuator"
+      default: 1
+      respond_to:
+        host: "localhost"
+        port: 9070
+    temperature_trip:
+      type: "DefaultActuator"
+      default: 1
+      respond_to:
+        host: "localhost"
+        port: 9071

@@ -1,5 +1,7 @@
 from .worker import Worker
 from threading import Thread, Event
+import os
+import struct
 
 
 class PressureSensor(Worker):
@@ -21,12 +23,11 @@ class PressureSensor(Worker):
                     self.logger.info("Pressure Reading \"{}\": {:.2f} psi".format(self.attributes['name'],
                                                                                   self.pressure_reading))
                 self.lock.release()
-
         Thread(target=pp, daemon=True).start()
         return stopped
 
     def run(self, receive_queue):
-        stop_flag = self.print_pressure_reading()
+        # stop_flag = self.print_pressure_reading()
         for item in iter(receive_queue.get, None):
             self.started = True
             self.attributes['clock'].update_time(item[0])
@@ -34,7 +35,9 @@ class PressureSensor(Worker):
                 self.num_readings = self.num_readings + 1
                 self.previous_readings.append(item[1])
                 self.pressure_reading = item[1]
-        stop_flag.set()
+                # if self.pressure_reading < self.attributes.get('trip_setting', -1):
+                #     os.write(self.pipe, struct.pack('>d', 1))
+        # stop_flag.set()
 
     def get_reading(self):
         with self.lock:

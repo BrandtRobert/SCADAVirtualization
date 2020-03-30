@@ -15,8 +15,8 @@ class Worker(ABC):
         self.started = False
         self.modbus_receiver = None
         self.modbus_thread = None
-        self.logger = Logger('WorkerLogger-{}'.format(attr['port']), '../logger/logs/worker_log.txt',
-                             prefix='Worker Server {}'.format(attr['port']))
+        self.logger = Logger('WorkerLogger-{}'.format(attr.get('port', 0)), '../logger/logs/worker_log.txt',
+                             prefix='Worker Server {}'.format(attr.get('port', 0)))
         self.previous_readings = collections.deque(maxlen=10)
         self.num_readings = 0
 
