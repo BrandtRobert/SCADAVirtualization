@@ -17,6 +17,7 @@ class LogicController:
         self.setup_complete = False
         self.logger = Logger("PLCLogger", "../logger/logs/plc_log.txt", prefix="[{}]".format(self.plc_name))
         self.clock = PLCClock()
+        self.register_map = {}
 
     def __str__(self):
         return "{}:\n{}".format(self.plc_name, self.conf)
@@ -33,7 +34,7 @@ class LogicController:
         for worker_name, attr in workers_conf.items():
             # Invoke the factory to create a new worker
             attr['name'] = worker_name
-            print(attr)
+            # print(attr)
             worker, response_pipe_r = WorkerFactory.create_new_worker(attr)
             if worker is None:
                 continue
@@ -66,6 +67,7 @@ class LogicController:
                 "attributes": attr,
                 "worker": worker,
             }
+            self.register_map[int(attr['register'])] = worker
             self.logger.info("Setting up worker '{}'".format(worker_name))
         self.setup_complete = True
 
@@ -85,21 +87,26 @@ class LogicController:
             request_header = request['header']
             request_body = request['body']
             self.logger.debug("Servicing modbus request {}".format(request_header))
+            start_register = request_body['address']
             if request_header['function_code'] == FunctionCodes.WRITE_SINGLE_HOLDING_REGISTER:
                 setting = request_body['value']
-                # We will have to change this to select worker based on the register
-                #    (we need some mapping config file though)
-                for worker_name, info in self.worker_processes.items():
-                    if "setter" in worker_name:
-                        self.logger.info("Setting new pressure reading to {} at {}".format(setting, worker_name))
-                        info['worker'].set_reading(setting)
+                worker = self.register_map.get(start_register, None)
+                if worker:
+                    if hasattr(worker, 'set_reading'):
+                        worker.set_reading(setting)
+                        print("Setting new pressure reading to {} at {}"
+                              .format(setting, worker.attributes['name']))
+                        self.logger.info("Setting new pressure reading to {} at {}"
+                                 .format(setting, worker.attributes['name']))
                 return modbusencoder.respond_write_registers(request_header, 0, 1, endianness=ENDIANNESS)
             else:
                 readings = []
-                for worker_name, info in self.worker_processes.items():
-                    worker = info['worker']
-                    self.logger.info('Retrieving data from {}'.format(worker_name))
-                    readings.append((worker.get_reading(), 'FLOAT32'))
+                register_count = request_body['count']
+                for current_reg in range(start_register, register_count + 1, 2):
+                    worker = self.register_map.get(current_reg, None)
+                    if worker:
+                        self.logger.info('Retrieving data from {}'.format(worker.attributes['name']))
+                        readings.append((worker.get_reading(), 'FLOAT32'))
                 self.logger.info("Responding to request with {}".format(readings))
                 return modbusencoder.respond_read_registers(request_header, readings, endianness=ENDIANNESS)
 

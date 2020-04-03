@@ -33,18 +33,25 @@ class SensorBus:
     def __init__(self, conf: Dict):
         self.clients = {}
         self.sensors = {}
+        self.client_info = {}
         self._init_sensor_clients(conf)
 
     def _init_sensor_clients(self, conf: Dict):
         for plc_name, plc_info in conf.items():
             modbus_port = plc_info['modbus_port']
             self.clients[plc_name] = ModbusClient(schedulers.ASYNC_IO, host='localhost', port=modbus_port)[-1].protocol
-            self.sensors[plc_name] = []
+            self.client_info[plc_name] = plc_info
+            self.sensors[plc_name] = {}
 
     async def _read_sensor(self, name: str, client: ModbusClient):
-        result = await client.read_holding_registers(0, 4)
+        num_registers = len(self.client_info[name]['workers'].keys()) * 2
+        result = await client.read_holding_registers(0, num_registers)
         registers = SensorBus._parse_registers(result.registers)
-        self.sensors[name] = registers
+        print("Read registers: {} from client {}".format(registers, name))
+        i = 0
+        for register in registers:
+            self.sensors[name][i] = register
+            i = i+2
 
     async def _update_sensors(self):
         tasks = []
@@ -57,15 +64,17 @@ class SensorBus:
         loop.run_until_complete(self._update_sensors())
         return self.sensors
 
-    async def _write_actuator(self, value, client: ModbusClient):
-        await client.write_register(0, value)
+    async def _write_actuator(self, register: int, value: float, client: ModbusClient):
+        await client.write_register(register, value)
 
     async def _write_actuators(self, plc_val: List):
         tasks = []
-        for plc_name, value in plc_val:
-            tasks.append(self._write_actuator(value, self.clients[plc_name]))
+        print(plc_val)
+        for plc_name, register, value in plc_val:
+            tasks.append(self._write_actuator(register, value, self.clients[plc_name]))
         await asyncio.gather(*tasks)
 
     def update_actuators(self, plc_val: List):
+        # (plc_name, register, value) --> list of tuples
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self._write_actuators(plc_val))

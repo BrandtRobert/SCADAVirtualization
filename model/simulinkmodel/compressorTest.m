@@ -17,6 +17,7 @@ stopTime=7*24*3600;
 lineParm=[];
 lineParm=[lineParm;add_line("Main 1",48,50,pNom)];
 lineParm=[lineParm;add_line("Main 2",24,35,pNom)];
+lineParm=[lineParm;add_line("Main 3",24,35,pNom)];
 
 % Load 1
 loadParm = [];

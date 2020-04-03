@@ -4,11 +4,14 @@ main_compressor_plc:
     pressure_sensor:
       type: "DefaultSensor"
       port: 8070
+      register: 0
     temperature_sensor:
       type: "DefaultSensor"
       port: 8071
+      register: 2
     pressure_setter:
       type: "DefaultActuator"
+      register: 4
       respond_to:
         host: "localhost"
         port: 9069
@@ -18,18 +21,22 @@ main_power_plant:
     pressure_sensor:
       type: "DefaultSensor"
       port: 7070
+      register: 0
     temperature_sensor:
       type: "DefaultSensor"
       port: 7071
+      register: 2
     pressure_trip:
       type: "DefaultActuator"
       default: 1
+      register: 4
       respond_to:
         host: "localhost"
         port: 9070
     temperature_trip:
       type: "DefaultActuator"
       default: 1
+      register: 6
       respond_to:
         host: "localhost"
         port: 9071

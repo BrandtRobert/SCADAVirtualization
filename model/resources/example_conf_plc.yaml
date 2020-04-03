@@ -1,98 +1,112 @@
 pp_watkins_plc:
   modbus_port: 9090
   workers:
-    pressure_sensor_pp_watkins:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7073
-    on_off_indicator_pp_watkins:
+      register: 0
+    on_off_indicator:
       type: "SimulationStopper"
       port: 8083
+      register: 2
       respond_to:
         host: "localhost"
         port: 6061
 ds_denver_plc:
   modbus_port: 9091
   workers:
-    pressure_sensor_ds_denver:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7070
       channel_id: 7070
-    on_off_indicator_ds_denver:
+      register: 0
+    on_off_indicator:
       type: "SimulationStopper"
       port: 8080
       channel_id: 8080
+      register: 2
       respond_to:
         host: "localhost"
         port: 6061
 pp_cherokee_plc:
   modbus_port: 9092
   workers:
-    pressure_sensor_pp_cherokee:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7071
       channel_id: 7071
+      register: 0
       compromised:
         hold_back: 5
         reading: x * 1.05 # 200 psi
         after: 3600 # after 1 day of sim time
-    on_off_indicator_pp_cherokee:
+    on_off_indicator:
       type: "SimulationStopper"
       port: 8081
       channel_id: 8081
+      register: 2
       respond_to:
         host: "localhost"
         port: 6061
 ds_small_plc:
   modbus_port: 9093
   workers:
-    pressure_sensor_ds_small:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7072
       channel_id: 7072
-    on_off_indicator_ds_small:
+      register: 0
+    on_off_indicator:
       type: "SimulationStopper"
       port: 8082
       channel_id: 8082
+      register: 2
       respond_to:
         host: "localhost"
         port: 6061
 pp_aux_plc:
   modbus_port: 9094
   workers:
-    pressure_sensor_pp_aux:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7074
       channel_id: 7074
-    on_off_indicator_pp_aux:
+      register: 0
+    on_off_indicator:
       type: "SimulationStopper"
       port: 8084
       channel_id: 8084
+      register: 2
       respond_to:
         host: "localhost"
         port: 6061
 main_compressor_1_plc:
   modbus_port: 9095
   workers:
-    pressure_sensor_main_compressor_1:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7075
       channel_id: 7075
-    pressure_setter_main_compressor_1:
+      register: 0
+    pressure_setter:
       type: "PressureSetter"
       port: 10001
+      register: 2
       respond_to:
         host: 'localhost'
         port: 6062
 main_compressor_2_plc:
   modbus_port: 9096
   workers:
-    pressure_sensor_main_compressor_2:
+    pressure_sensor:
       type: "PressureSensor"
       port: 7076
       channel_id: 7076
-    pressure_setter_main_compressor_2:
+      register: 0
+    pressure_setter:
       type: "PressureSetter"
       port: 10002
+      register: 2
       respond_to:
         host: 'localhost'
         port: 6063

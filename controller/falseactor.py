@@ -10,21 +10,38 @@ class FalseActor:
 
     def __init__(self, conf: Dict):
         self.sensor_bus = SensorBus(conf)
+        self.worker_info = {}
         self.logger = Logger("ActorLogs", "../model/logger/logs/actors_logs.txt")
+        self._init_worker_info(conf)
+
+    def _init_worker_info(self, conf):
+        for plc, info in conf.items():
+            for worker, worker_info in info['workers'].items():
+                self.worker_info[plc + '.' + worker] = worker_info
 
     def begin_control_loop(self):
         while True:
             time.sleep(1)
+            print("getting sensor readings")
             sensors = self.sensor_bus.get_sensor_readings()
-            aux_pressure = sensors['pp_aux_plc'][0]
-            watkins_pressure = sensors['pp_watkins_plc'][0]
-            cherokee_pressure = sensors['pp_cherokee_plc'][0]
-            main_compressor_1_setting = sensors['main_compressor_1_plc'][1]
-            main_compressor_2_setting = sensors['main_compressor_2_plc'][1]
-            main_compressor_2_p = sensors['main_compressor_2_plc'][0]
+            aux_pressure = \
+                sensors['pp_aux_plc'][self.worker_info['pp_aux_plc.pressure_sensor']['register']]
+            watkins_pressure = \
+                sensors['pp_watkins_plc'][self.worker_info['pp_watkins_plc.pressure_sensor']['register']]
+            cherokee_pressure = \
+                sensors['pp_cherokee_plc'][self.worker_info['pp_cherokee_plc.pressure_sensor']['register']]
+            main_compressor_1_setting = \
+                sensors['main_compressor_1_plc'][self.worker_info['main_compressor_1_plc.pressure_setter']['register']]
+            main_compressor_2_setting = \
+                sensors['main_compressor_2_plc'][self.worker_info['main_compressor_2_plc.pressure_setter']['register']]
+            main_compressor_2_p = \
+                sensors['main_compressor_2_plc'][self.worker_info['main_compressor_2_plc.pressure_sensor']['register']]
             # main_compressor_1 = sum(differences(600, x_i)
-
             if (main_compressor_2_p + cherokee_pressure + watkins_pressure) == 0:
+                to_write = ('main_compressor_1_plc',
+                            self.worker_info['main_compressor_2_plc.pressure_setter']['register'],
+                            650)
+                self.sensor_bus.update_actuators([to_write])
                 continue
 
             # Mean of the first downstream pressures * 1.5
