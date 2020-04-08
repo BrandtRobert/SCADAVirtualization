@@ -83,7 +83,6 @@ class LogicController:
         ENDIANNESS = 'BIG'
 
         def handle_request(request):
-            #@TODO Based on the request body respond with the appropriate worker information
             request_header = request['header']
             request_body = request['body']
             self.logger.debug("Servicing modbus request {}".format(request_header))
@@ -94,15 +93,15 @@ class LogicController:
                 if worker:
                     if hasattr(worker, 'set_reading'):
                         worker.set_reading(setting)
-                        print("Setting new pressure reading to {} at {}"
-                              .format(setting, worker.attributes['name']))
+                        # print("Setting new reading to {} at {}"
+                        #       .format(setting, worker.attributes['name']))
                         self.logger.info("Setting new pressure reading to {} at {}"
                                  .format(setting, worker.attributes['name']))
                 return modbusencoder.respond_write_registers(request_header, 0, 1, endianness=ENDIANNESS)
             else:
                 readings = []
                 register_count = request_body['count']
-                for current_reg in range(start_register, register_count + 1, 2):
+                for current_reg in range(start_register, register_count, 2):
                     worker = self.register_map.get(current_reg, None)
                     if worker:
                         self.logger.info('Retrieving data from {}'.format(worker.attributes['name']))

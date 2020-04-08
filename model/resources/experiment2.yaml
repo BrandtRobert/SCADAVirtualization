@@ -1,0 +1,110 @@
+power_plant_1:
+  modbus_port: 9090
+  workers:
+    pressure_trip:
+      type: "DefaultActuator"
+      default: 0
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 8001
+    temperature_trip:
+      type: "DefaultActuator"
+      default: 0
+      register: 2
+      respond_to:
+        host: "localhost"
+        port: 8002
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8003
+      register: 4
+#      compromised:
+#        hold_back: 5
+#        reading: max(x - (t**.5), 150)
+#        after: 3600 # after 1 day of sim time
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 8004
+      register: 6
+power_plant_2:
+  modbus_port: 9091
+  workers:
+    pressure_trip:
+      type: "DefaultActuator"
+      default: 0
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 8005
+    temperature_trip:
+      type: "DefaultActuator"
+      default: 0
+      register: 2
+      respond_to:
+        host: "localhost"
+        port: 8006
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8007
+      register: 4
+    #      compromised:
+    #        hold_back: 5
+    #        reading: max(x - (t**.5), 150)
+    #        after: 3600 # after 1 day of sim time
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 8008
+      register: 6
+main_compressor_plc:
+  modbus_port: 9092
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8010
+      register: 0
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 8011
+      register: 2
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 4
+      respond_to:
+        host: "localhost"
+        port: 8012
+oracle:
+  modbus_port: 9093
+  workers:
+    timer:
+      type: "Timer"
+      port: 6068
+      channel_id: 6068
+      register: 0
+      respond_to:
+        host: 'localhost'
+        port: 6065
+    plant_1_pressure:
+      type: "DefaultSensor"
+      channel: 8003
+      register: 2
+    plant_1_temperature:
+      type: "DefaultSensor"
+      channel: 8004
+      register: 4
+    plant_2_pressure:
+      type: "DefaultSensor"
+      channel: 8007
+      register: 6
+    plant_2_temperature:
+      type: "DefaultSensor"
+      channel: 8008
+      register: 8
+    main_compressor_pressure:
+      type: "DefaultSensor"
+      channel: 8010
+      register: 10
+    main_compressor_temperature:
+      type: "DefaultSensor"
+      channel: 8011
+      register: 12

@@ -20,5 +20,5 @@ class DefaultActuator(Worker):
     def set_reading(self, setting):
         with self.lock:
             self.setting = setting
-            psi = struct.pack(">d", int(self.setting))
-            os.write(self.pipe, psi)
+            update = struct.pack(">d", int(self.setting))
+            os.write(self.pipe, update)

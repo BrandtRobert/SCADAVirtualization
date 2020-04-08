@@ -38,7 +38,7 @@ pp_cherokee_plc:
       register: 0
       compromised:
         hold_back: 5
-        reading: x * 1.05 # 200 psi
+        reading: x - (t**.5)
         after: 3600 # after 1 day of sim time
     on_off_indicator:
       type: "SimulationStopper"

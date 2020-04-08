@@ -3,11 +3,11 @@ main_compressor_plc:
   workers:
     pressure_sensor:
       type: "DefaultSensor"
-      port: 8070
+      port: 7070
       register: 0
     temperature_sensor:
       type: "DefaultSensor"
-      port: 8071
+      port: 7071
       register: 2
     pressure_setter:
       type: "DefaultActuator"
@@ -20,23 +20,50 @@ main_power_plant:
   workers:
     pressure_sensor:
       type: "DefaultSensor"
-      port: 7070
+      port: 8070
       register: 0
+      compromised:
+        hold_back: 5
+        reading: max(x - (t**.5), 150)
+        after: 3600 # after 1 day of sim time
     temperature_sensor:
       type: "DefaultSensor"
-      port: 7071
+      port: 8071
       register: 2
     pressure_trip:
       type: "DefaultActuator"
-      default: 1
+      default: 0
       register: 4
       respond_to:
         host: "localhost"
         port: 9070
     temperature_trip:
       type: "DefaultActuator"
-      default: 1
+      default: 0
       register: 6
       respond_to:
         host: "localhost"
         port: 9071
+oracle:
+  modbus_port: 9097
+  workers:
+    timer:
+      type: "Timer"
+      port: 6068
+      channel_id: 6068
+      register: 0
+      respond_to:
+        host: 'localhost'
+        port: 6065
+    main_plant_pressure:
+      type: "DefaultSensor"
+      channel: 8070
+      register: 2
+    main_plant_temperature:
+      type: "DefaultSensor"
+      channel: 8071
+      register: 4
+    main_compressor_pressure:
+      type: "DefaultSensor"
+      channel: 7070
+      register: 6

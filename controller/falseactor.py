@@ -22,8 +22,13 @@ class FalseActor:
     def begin_control_loop(self):
         while True:
             time.sleep(1)
-            print("getting sensor readings")
             sensors = self.sensor_bus.get_sensor_readings()
+            sim_time = \
+                sensors['oracle'][self.worker_info['oracle.timer']['register']]
+
+            if sim_time > 604800:
+                break
+
             aux_pressure = \
                 sensors['pp_aux_plc'][self.worker_info['pp_aux_plc.pressure_sensor']['register']]
             watkins_pressure = \
@@ -36,12 +41,9 @@ class FalseActor:
                 sensors['main_compressor_2_plc'][self.worker_info['main_compressor_2_plc.pressure_setter']['register']]
             main_compressor_2_p = \
                 sensors['main_compressor_2_plc'][self.worker_info['main_compressor_2_plc.pressure_sensor']['register']]
+
             # main_compressor_1 = sum(differences(600, x_i)
             if (main_compressor_2_p + cherokee_pressure + watkins_pressure) == 0:
-                to_write = ('main_compressor_1_plc',
-                            self.worker_info['main_compressor_2_plc.pressure_setter']['register'],
-                            650)
-                self.sensor_bus.update_actuators([to_write])
                 continue
 
             # Mean of the first downstream pressures * 1.5
@@ -50,7 +52,10 @@ class FalseActor:
             new_pressure_setting = int(main_compressor_1_setting + round(pressure_update))
             # print("Updating main compressor pressure ", new_pressure_setting)
             new_pressure_setting = min(800, max(new_pressure_setting, 400))
-            self.sensor_bus.update_actuators([('main_compressor_1_plc', new_pressure_setting)])
+            to_write = ('main_compressor_1_plc',
+                        self.worker_info['main_compressor_1_plc.pressure_setter']['register'],
+                        new_pressure_setting)
+            self.sensor_bus.update_actuators([to_write])
 
             # if 0 < aux_pressure < 550 or 0 < cherokee_pressure < 550:
             #     new_pressure_setting = int(min(main_compressor_setting + 25, 800))
@@ -59,6 +64,11 @@ class FalseActor:
             # else: # pressure is normal (550 - 650)
             #     continue
             # print('Pressure out of normal range updating too', new_pressure_setting)
+        data_collector = self.sensor_bus.get_data_collector()
+        data_collector.add_to_plot('pp_aux_plc.pressure_sensor', range(0, sim_time, 60))
+        data_collector.add_to_plot('pp_watkins_plc.pressure_sensor', range(0, sim_time, 60))
+        data_collector.add_to_plot('pp_cherokee_plc.pressure_sensor', range(0, sim_time, 60))
+        data_collector.show_plot()
 
 
 if __name__ == "__main__":

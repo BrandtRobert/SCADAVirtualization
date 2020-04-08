@@ -35,9 +35,10 @@ class CompromiseWorker(Worker):
         if sim_time > self.activate_at and self.worker.num_readings > self.conf.get('hold_back', 0):
             i = self.conf.get('hold_back', 0)
             delayed_reading = self.worker.previous_readings[-(i+1)]
-            f = lambda x: eval(self.conf.get('reading', 'x'))
-            new_reading = f(delayed_reading)
-            print("Compromise new reading", reading, new_reading)
+            f = lambda x, t: eval(self.conf.get('reading', 'x'))
+            new_reading = f(delayed_reading, sim_time)
+            # print("New reading: {} after applying f(x,t) = {} to {}"
+            #       .format(new_reading, self.conf.get("reading", "x"), delayed_reading))
             return new_reading
         else:
             return reading

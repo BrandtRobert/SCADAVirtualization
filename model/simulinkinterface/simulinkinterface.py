@@ -110,7 +110,8 @@ class SimulinkInterface:
         """
         response_data = os.read(read_pipe, 128)
         self.logger.info("Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
-        # print("!!!Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
+        if not (port == 6065 or port == 9069):
+            print("!!!Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
         self.udp_send_socket.sendto(response_data, (host, port))
 
     def service_connection(self, key):

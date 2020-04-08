@@ -3,6 +3,7 @@ from pymodbus.client.asynchronous import schedulers
 from typing import Dict, List
 from pymodbus.client.asynchronous.udp \
     import AsyncModbusUDPClient as ModbusClient
+from controller.datacollector import DataCollector
 
 
 class SensorBus:
@@ -34,6 +35,9 @@ class SensorBus:
         self.clients = {}
         self.sensors = {}
         self.client_info = {}
+        self.register_to_name = {}
+        self.data_collector = DataCollector()
+        self.started = False
         self._init_sensor_clients(conf)
 
     def _init_sensor_clients(self, conf: Dict):
@@ -42,15 +46,19 @@ class SensorBus:
             self.clients[plc_name] = ModbusClient(schedulers.ASYNC_IO, host='localhost', port=modbus_port)[-1].protocol
             self.client_info[plc_name] = plc_info
             self.sensors[plc_name] = {}
+            for name, worker in plc_info['workers'].items():
+                self.register_to_name[plc_name + "." + str(worker['register'])] = plc_name + '.' + name
 
     async def _read_sensor(self, name: str, client: ModbusClient):
         num_registers = len(self.client_info[name]['workers'].keys()) * 2
         result = await client.read_holding_registers(0, num_registers)
         registers = SensorBus._parse_registers(result.registers)
-        print("Read registers: {} from client {}".format(registers, name))
         i = 0
         for register in registers:
             self.sensors[name][i] = register
+            if self.started:
+                sensor_name = self.register_to_name[name + "." + str(i)]
+                self.data_collector.collect_data_item(sensor_name, register)
             i = i+2
 
     async def _update_sensors(self):
@@ -69,7 +77,6 @@ class SensorBus:
 
     async def _write_actuators(self, plc_val: List):
         tasks = []
-        print(plc_val)
         for plc_name, register, value in plc_val:
             tasks.append(self._write_actuator(register, value, self.clients[plc_name]))
         await asyncio.gather(*tasks)
@@ -78,3 +85,6 @@ class SensorBus:
         # (plc_name, register, value) --> list of tuples
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self._write_actuators(plc_val))
+
+    def get_data_collector(self):
+        return self.data_collector
