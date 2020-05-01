@@ -61,6 +61,7 @@ class Experiment1:
         data_collector.add_to_plot('oracle.main_plant_pressure', 'oracle.timer')
         # data_collector.add_to_plot('oracle.main_plant_temperature', 'oracle.timer')
         data_collector.show_plot('Change in Pressure Over Time',
+                                    save_as='experiment1.png',
                                     ylabel='Pressure Reading (PSI)',
                                     legend_labels=['compromised plant pressure', 'real plant temperature',
                                                    'real plant pressure'])

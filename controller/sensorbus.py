@@ -77,6 +77,7 @@ class SensorBus:
 
     async def _write_actuators(self, plc_val: List):
         tasks = []
+        print("Sending updates:", plc_val)
         for plc_name, register, value in plc_val:
             tasks.append(self._write_actuator(register, value, self.clients[plc_name]))
         await asyncio.gather(*tasks)

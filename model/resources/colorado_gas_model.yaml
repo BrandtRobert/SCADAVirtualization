@@ -1,0 +1,153 @@
+compressor_fort_collins:
+  modbus_port: 9090
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5000
+compressor_longmont:
+  modbus_port: 9091
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5001
+compressor_denver_watkins:
+  modbus_port: 9092
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5003
+compressor_colorado_springs:
+  modbus_port: 9093
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5004
+compressor_cheyenne_wells:
+  modbus_port: 9094
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5005
+compressor_springfield:
+  modbus_port: 9095
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5006
+compressor_fort_morgan:
+  modbus_port: 9096
+  workers:
+    pressure_setter:
+      type: "DefaultActuator"
+      register: 0
+      respond_to:
+        host: "localhost"
+        port: 5007
+pp_fort_collins:
+  modbus_port: 9097
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8000
+      register: 0
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 9000
+      register: 2
+pp_denver:
+  modbus_port: 9098
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8001
+      register: 0
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 9001
+      register: 2
+pp_colorado_springs:
+  modbus_port: 9099
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8002
+      register: 0
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 9002
+      register: 2
+pp_cheyenne_wells:
+  modbus_port: 10010
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8003
+      register: 0
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 9003
+      register: 2
+pp_fort_morgan:
+  modbus_port: 10011
+  workers:
+    pressure_sensor:
+      type: "DefaultSensor"
+      port: 8004
+      register: 0
+    temperature_sensor:
+      type: "DefaultSensor"
+      port: 9004
+      register: 2
+oracle:
+  modbus_port: 10012
+  workers:
+    timer:
+      type: "Timer"
+      port: 6068
+      channel_id: 6068
+      register: 0
+      respond_to:
+        host: 'localhost'
+        port: 6065
+#    plant_1_pressure:
+#      type: "DefaultSensor"
+#      channel: 8003
+#      register: 2
+#    plant_1_temperature:
+#      type: "DefaultSensor"
+#      channel: 8004
+#      register: 4
+#    plant_2_pressure:
+#      type: "DefaultSensor"
+#      channel: 8007
+#      register: 6
+#    plant_2_temperature:
+#      type: "DefaultSensor"
+#      channel: 8008
+#      register: 8
+#    main_compressor_pressure:
+#      type: "DefaultSensor"
+#      channel: 8010
+#      register: 10
+#    main_compressor_temperature:
+#      type: "DefaultSensor"
+#      channel: 8011
+#      register: 12

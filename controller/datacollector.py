@@ -26,7 +26,7 @@ class DataCollector:
     def add_to_plot(self, name, time):
         plot.plot(self.collection_items[time], self.collection_items[name], label=name, linewidth=2)
 
-    def show_plot(self, title, legend_labels, ylabel):
+    def show_plot(self, title, legend_labels, ylabel, save_as="default.png"):
         legend = plot.legend(legend_labels, loc='lower left')
         frame = legend.get_frame()
         frame.set_facecolor('0.9')
@@ -37,5 +37,5 @@ class DataCollector:
         plot.ylabel(ylabel)
         last_day = max(self.collection_items['oracle.timer'])
         plot.xticks(ticks=np.arange(0, last_day + 1, 24 * 3600), labels=[str(x) for x in np.arange(0, 8, 1)])
-        plot.savefig('experiment1.png')
+        plot.savefig(save_as)
         plot.show()

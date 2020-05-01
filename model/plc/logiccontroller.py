@@ -93,8 +93,6 @@ class LogicController:
                 if worker:
                     if hasattr(worker, 'set_reading'):
                         worker.set_reading(setting)
-                        # print("Setting new reading to {} at {}"
-                        #       .format(setting, worker.attributes['name']))
                         self.logger.info("Setting new pressure reading to {} at {}"
                                  .format(setting, worker.attributes['name']))
                 return modbusencoder.respond_write_registers(request_header, 0, 1, endianness=ENDIANNESS)
