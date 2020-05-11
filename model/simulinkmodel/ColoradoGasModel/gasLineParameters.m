@@ -8,25 +8,25 @@ function [lineParm,pNom] = gasLineParameters(conf, systemPressure)
     lineParm=table();
     
     % 1
-    lineParm=[lineParm;add_line("Cheyenne to Fort Collins",32,45,pNom)];
+    lineParm=[lineParm;add_line("Cheyenne to Fort Collins",36,45,pNom)];
     % 2
     lineParm=[lineParm;add_line("Fort Collins to Longmont",32,40,pNom)];
     % 3
     lineParm=[lineParm;add_line("Longmont to Denver",32,40,pNom)];
     % 4
-    lineParm=[lineParm;add_line("Denver to Colorado Springs",16,70,pNom)];
+    lineParm=[lineParm;add_line("Denver to Colorado Springs",24,70,pNom)];
     % 5
     lineParm=[lineParm;add_line("Colorado Springs to Trindad",16,130,pNom)];
     % 6
-    lineParm=[lineParm;add_line("Longmont to Cheyenne Wells",16,200,pNom)];
+    lineParm=[lineParm;add_line("Longmont to Cheyenne Wells",32,200,pNom)];
     % 7
     lineParm=[lineParm;add_line("Cheyenne Wells to Springfield",16,130,pNom)];
     %8
-    lineParm=[lineParm;add_line("Cheyenne to Fort Morgan",16,100,pNom)];
+    lineParm=[lineParm;add_line("Cheyenne to Fort Morgan",26,100,pNom)];
     %9
     lineParm=[lineParm;add_line("Fort Morgan to Longmont",16,105,pNom)];
     %10
-    lineParm=[lineParm;add_line("Fort Morgan to Denver",16,200,pNom)];
+    lineParm=[lineParm;add_line("Fort Morgan to Denver",24,200,pNom)];
     %11
     lineParm=[lineParm;add_line("Cheyenne Wells to CO Springs",16,71,pNom)];
     %12

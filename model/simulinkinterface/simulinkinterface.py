@@ -109,6 +109,8 @@ class SimulinkInterface:
         :return:
         """
         response_data = os.read(read_pipe, 128)
+        if port == 5004:
+            print(binascii.hexlify(response_data))
         self.logger.info("Sending response {} to {}:{}".format(binascii.hexlify(response_data), host, port))
         self.udp_send_socket.sendto(response_data, (host, port))
 

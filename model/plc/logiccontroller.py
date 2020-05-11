@@ -34,7 +34,6 @@ class LogicController:
         for worker_name, attr in workers_conf.items():
             # Invoke the factory to create a new worker
             attr['name'] = worker_name
-            # print(attr)
             worker, response_pipe_r = WorkerFactory.create_new_worker(attr)
             if worker is None:
                 continue

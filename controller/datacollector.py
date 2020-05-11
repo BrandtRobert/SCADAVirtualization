@@ -36,6 +36,7 @@ class DataCollector:
         plot.xlabel('Simulation Time (Days)')
         plot.ylabel(ylabel)
         last_day = max(self.collection_items['oracle.timer'])
+        plot.yticks(np.arange(0, 1600, 100))
         plot.xticks(ticks=np.arange(0, last_day + 1, 24 * 3600), labels=[str(x) for x in np.arange(0, 8, 1)])
         plot.savefig(save_as)
         plot.show()

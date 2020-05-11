@@ -7,6 +7,20 @@ compressor_fort_collins:
       respond_to:
         host: "localhost"
         port: 5000
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5100
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5200
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6000
 compressor_longmont:
   modbus_port: 9091
   workers:
@@ -16,6 +30,20 @@ compressor_longmont:
       respond_to:
         host: "localhost"
         port: 5001
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5101
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5201
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6001
 compressor_denver_watkins:
   modbus_port: 9092
   workers:
@@ -25,6 +53,20 @@ compressor_denver_watkins:
       respond_to:
         host: "localhost"
         port: 5003
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5103
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5203
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6003
 compressor_colorado_springs:
   modbus_port: 9093
   workers:
@@ -34,6 +76,20 @@ compressor_colorado_springs:
       respond_to:
         host: "localhost"
         port: 5004
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5104
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5204
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6004
 compressor_cheyenne_wells:
   modbus_port: 9094
   workers:
@@ -43,6 +99,20 @@ compressor_cheyenne_wells:
       respond_to:
         host: "localhost"
         port: 5005
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5105
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5205
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6005
 compressor_springfield:
   modbus_port: 9095
   workers:
@@ -52,6 +122,20 @@ compressor_springfield:
       respond_to:
         host: "localhost"
         port: 5006
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5106
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5206
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6006
 compressor_fort_morgan:
   modbus_port: 9096
   workers:
@@ -61,6 +145,20 @@ compressor_fort_morgan:
       respond_to:
         host: "localhost"
         port: 5007
+    pressure_sensor:
+      type: "DefaultSensor"
+      register: 2
+      port: 5107
+    temperature_sensor:
+      type: "DefaultSensor"
+      register: 4
+      port: 5207
+    power_setter:
+      type: "DefaultActuator"
+      register: 6
+      respond_to:
+        host: "localhost"
+        port: 6007
 pp_fort_collins:
   modbus_port: 9097
   workers:

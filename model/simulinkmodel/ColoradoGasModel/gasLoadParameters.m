@@ -14,14 +14,14 @@ function [loadParm,lastLoadChange,loadCapacities] = gasLoadParameters(conf, syst
     pwr=[0 5];
     loadCapacities=[];
     
-    pwr=[pwr; add_ramp(3600*12,rampTime,5,120)];
+    pwr=[pwr; add_ramp(3600*12,rampTime,5,10)];
     % Large ramp within the system
     % from about .1 to almost max capacity in an hour
     % Denmark ~ 2000 20% wind displacement, peak power was 80%
-    pwr=[pwr; add_ramp(3600*30,3600,120,400)];
-    pwr=[pwr; add_ramp(3600*24*3,rampTime,400,425)];
-    pwr=[pwr; add_ramp(3600*24*4,rampTime,425,225)];
-    pwr=[pwr; add_ramp(3600*24*5,rampTime,225,250)];
+    pwr=[pwr; add_ramp(3600*15,3600,10,100)];
+    pwr=[pwr; add_ramp(3600*24,3600,100,350)];
+    pwr=[pwr; add_ramp(3600*24*1.5,rampTime,350,50)];
+    pwr=[pwr; add_ramp(3600*24*2,rampTime,50,350)];
     loadParm=[loadParm; add_load("System Load",pwr,pNom,pCut)];
     
     % not in use because of system load (2)

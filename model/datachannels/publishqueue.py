@@ -33,7 +33,6 @@ class PublishQueue(object):
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-
     @ensure_parent
     def register(self, channel: str):
         send_q = multiprocessing.Queue()
