@@ -34,6 +34,10 @@ compressor_longmont:
       type: "DefaultSensor"
       register: 2
       port: 5101
+      compromised:
+        hold_back: 0
+        after: 3600
+        reading: (x*0) + 800
     temperature_sensor:
       type: "DefaultSensor"
       register: 4
@@ -57,6 +61,10 @@ compressor_denver_watkins:
       type: "DefaultSensor"
       register: 2
       port: 5103
+#      compromised:
+#        hold_back: 0
+#        after: 3600
+#        reading: max(x - t**.5, 600)
     temperature_sensor:
       type: "DefaultSensor"
       register: 4
@@ -169,7 +177,7 @@ pp_fort_collins:
       compromised:
         hold_back: 0
         after: 3600
-        reading: (x*0) + 800
+        reading: (x*0)+800
     temperature_sensor:
       type: "DefaultSensor"
       port: 9000
@@ -181,10 +189,10 @@ pp_denver:
       type: "DefaultSensor"
       port: 8001
       register: 0
-#      compromised:
-#        hold_back: 600 # --> 10 hour delay
-#        reading: x
-#        after: 86400 # after 1 day of sim time
+      compromised:
+        hold_back: 0
+        after: 3600
+        reading: max(x-(5*t**.25), 600)
     temperature_sensor:
       type: "DefaultSensor"
       port: 9001
@@ -233,36 +241,15 @@ oracle:
       respond_to:
         host: 'localhost'
         port: 6065
-    cheyenne_wells_pressure_true:
-      type: "DefaultSensor"
-      channel: 5104
-      register: 2
-    cheyenne_wells_pp_true:
-      type: "DefaultSensor"
-      channel: 8003
-      register: 4
-    fort_collins_true_pressure:
+    fort_collins_pp_true:
       type: "DefaultSensor"
       channel: 8000
+      register: 2
+    compressor_longmont_true:
+      type: "DefaultSensor"
+      channel: 5101
+      register: 4
+    denver_pp_true:
+      type: "DefaultSensor"
+      channel: 8001
       register: 6
-
-#    plant_1_temperature:
-#      type: "DefaultSensor"
-#      channel: 8004
-#      register: 4
-#    plant_2_pressure:
-#      type: "DefaultSensor"
-#      channel: 8007
-#      register: 6
-#    plant_2_temperature:
-#      type: "DefaultSensor"
-#      channel: 8008
-#      register: 8
-#    main_compressor_pressure:
-#      type: "DefaultSensor"
-#      channel: 8010
-#      register: 10
-#    main_compressor_temperature:
-#      type: "DefaultSensor"
-#      channel: 8011
-#      register: 12

@@ -32,7 +32,6 @@ class ColoradoGasModel:
             return False
 
     def begin_control_loop(self):
-        power_plant_1_tripped = False
         while True:
             time.sleep(.2)
             sensors = self.sensor_bus.get_sensor_readings()
@@ -44,11 +43,11 @@ class ColoradoGasModel:
                 continue
             else:
                 self.sensor_bus.started = True
-            if sim_time >= 604800:
+            if sim_time >= 259200:
                 # Simulation has ended
                 break
 
-            def iterate_leaves(leaves, p_nominal=800, p_max=60, p_min=20, dead_band=50):
+            def iterate_leaves(leaves, p_nominal=800, p_max=60, p_min=5, dead_band=25):
                 updates = []
                 non_ds = re.compile('ds*')
                 for leaf in leaves:
@@ -86,17 +85,43 @@ class ColoradoGasModel:
 
         print("Attempting to graph results....")
         data_collector = self.sensor_bus.get_data_collector()
-        data_collector.add_to_plot('pp_fort_collins.pressure_sensor', 'oracle.timer')
-        data_collector.add_to_plot('pp_denver.pressure_sensor', 'oracle.timer')
-        data_collector.add_to_plot('pp_colorado_springs.pressure_sensor', 'oracle.timer')
-        data_collector.add_to_plot('pp_cheyenne_wells.pressure_sensor', 'oracle.timer')
-        # data_collector.add_to_plot('oracle.main_plant_pressure', 'oracle.timer')
+        # data_collector.add_to_plot('pp_colorado_springs.pressure_sensor', 'oracle.timer')
+        # data_collector.add_to_plot('oracle.colorado_springs_true_pressure', 'oracle.timer')
         # data_collector.add_to_plot('oracle.main_plant_temperature', 'oracle.timer')
+
+        # data_collector.show_plot('Sensor Reading Over Time',
+        #                          save_as='coloradoGasModelPressure.png',
+        #                          ylabel='Pressure Reading (PSI)',
+        #                          legend_labels=['PP Colorado Springs Lie Pressure',
+        #                                         'PP Colorado Springs True Pressure'])
+
+        '''
+            Complex compromise checks
+        '''
+        data_collector.add_to_plot('oracle.fort_collins_pp_true', 'oracle.timer')
+        data_collector.add_to_plot('pp_fort_collins.pressure_sensor', 'oracle.timer')
+        data_collector.add_to_plot('oracle.compressor_longmont_true', 'oracle.timer')
+        data_collector.add_to_plot('compressor_longmont.pressure_sensor', 'oracle.timer')
+        data_collector.add_to_plot('oracle.denver_pp_true', 'oracle.timer')
+        data_collector.add_to_plot('pp_denver.pressure_sensor', 'oracle.timer')
+
+        # data_collector.show_plot('Sensor Reading Over Time',
+        #                          save_as='coloradoGasModelPressure.png',
+        #                          ylabel='Pressure Reading (PSI)',
+        #                          legend_labels=['PP Fort Collins True Pressure',
+        #                                         'PP Fort Collins Lie Pressure'])
+
         data_collector.show_plot('Sensor Reading Over Time',
                                  save_as='coloradoGasModelPressure.png',
                                  ylabel='Pressure Reading (PSI)',
-                                 legend_labels=['Fort Collins Pressure', 'Denver Pressure',
-                                                'Colorado Springs Pressure', 'Cheyenne Wells Pressure'])
+                                 legend_labels=['PP Fort Collins True Pressure',
+                                                'PP Fort Collins Lie Pressure',
+                                                'Compressor Longmont True Pressure',
+                                                'Compressor Longmont Lie Pressure',
+                                                'PP Denver True Pressure',
+                                                'PP Denver Lie Pressure'])
+
+
 
 
 if __name__ == "__main__":

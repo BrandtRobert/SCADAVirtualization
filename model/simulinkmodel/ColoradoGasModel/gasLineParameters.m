@@ -8,7 +8,7 @@ function [lineParm,pNom] = gasLineParameters(conf, systemPressure)
     lineParm=table();
     
     % 1
-    lineParm=[lineParm;add_line("Cheyenne to Fort Collins",36,45,pNom)];
+    lineParm=[lineParm;add_line("Cheyenne to Fort Collins",34,45,pNom)];
     % 2
     lineParm=[lineParm;add_line("Fort Collins to Longmont",32,40,pNom)];
     % 3

@@ -6,7 +6,7 @@ path(path,'CodeOutput');
 modelName="coloradoGasModel";
 stableTime=4*24*3600;
 % 3 day run time
-stopTime=3*24*3600;
+stopTime=7*24*3600;
 systemPressure=800;
 shutOffPoint=600;
 shutOffDuration=3600;
