@@ -122,8 +122,6 @@ class ColoradoGasModel:
                                                 'PP Denver Lie Pressure'])
 
 
-
-
 if __name__ == "__main__":
     fpath = sys.argv[1]
     with open(fpath, 'r') as stream:

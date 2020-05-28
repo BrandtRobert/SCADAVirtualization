@@ -39,10 +39,12 @@ drawnow(); % in case the viewer is open
 %% Create stable startup conditions - Step 2, ramp loads to initial values
 loadState="initial";
 % valveControlFlag="initial";
-sim(modelName);                                     % simulate
+s = sim(modelName);                                     % simulate
 op=simscape.op.create(ans.simlog,stableTime);      % capture ending state as initialization state
 
 % finally set stop time to handle entire simulation
 loadState="on";
 valveControlFlag="on";
 set_param(modelName,'StopTime',string(conf.StopTime));    % set time to stable with no loads
+
+%

@@ -44,6 +44,13 @@ main_power_plant:
       respond_to:
         host: "localhost"
         port: 9071
+aux_3:
+  modbus_port: 9092
+  workers:
+    pressure_sensor_of_aux:
+      type: "DefaultSensor"
+      port: 8074
+      register: 0
 oracle:
   modbus_port: 9097
   workers:
