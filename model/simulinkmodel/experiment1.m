@@ -1,7 +1,7 @@
 
 %% setup model and directory paths
-% path(path,'CodeSimulation'); 
-% path(path,'CodeOutput'); 
+path(path,'CodeSimulation'); 
+path(path,'CodeOutput'); 
 modelName='Experiment1';
 model=load_system(modelName);
 

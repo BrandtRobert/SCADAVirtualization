@@ -28,23 +28,23 @@ function [loadParm,lastLoadChange,loadCapacities] = gasLoadParameters(conf, syst
     loadParm=[loadParm; add_load("System Load",pwr,pNom,pCut)];
     
     % not in use because of system load (2)
-%     pwr=[0 5];
+    pwr=[0 5];
 %     pwr=[pwr; add_ramp(3600*12,rampTime,15,30)];
 %     pwr=[pwr; add_ramp(3600*30,rampTime,30,45)];
 %     pwr=[pwr; add_ramp(3600*24*3,rampTime,45,60)];
 %     pwr=[pwr; add_ramp(3600*24*4,rampTime,60,45)];
 %     pwr=[pwr; add_ramp(3600*24*5,rampTime,45,15)];
-%     loadParm=[loadParm; add_load("PP Fort Collins",pwr,pNom,pCut)];
+    loadParm=[loadParm; add_load("PP Fort Collins",pwr,pNom,pCut)];
     loadCapacities=[loadCapacities,75];
     
     % PP Denver (3)
     pwr=[0 5];
-    pwr=[pwr; add_ramp(3600*24*1.5,rampTime,5,10)];
-    pwr=[pwr; add_ramp(3600*24*2.2,rampTime,10,12)];
-    pwr=[pwr; add_ramp(3600*24*3.7,rampTime,12,8)];
-    pwr=[pwr; add_ramp(3600*24*4.1,rampTime,8,5)];
-    pwr=[pwr; add_ramp(3600*24*4.5,rampTime,8,5)];
-    pwr=[pwr; add_ramp(3600*24*5.0,rampTime,8,5)];
+%     pwr=[pwr; add_ramp(3600*24*1.5,rampTime,5,10)];
+%     pwr=[pwr; add_ramp(3600*24*2.2,rampTime,10,12)];
+%     pwr=[pwr; add_ramp(3600*24*3.7,rampTime,12,8)];
+%     pwr=[pwr; add_ramp(3600*24*4.1,rampTime,8,5)];
+%     pwr=[pwr; add_ramp(3600*24*4.5,rampTime,8,5)];
+%     pwr=[pwr; add_ramp(3600*24*5.0,rampTime,8,5)];
     loadParm=[loadParm; add_load("PP Denver",pwr,pNom,pCut)];
     loadCapacities=[loadCapacities,135];
  

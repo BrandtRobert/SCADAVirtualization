@@ -6,7 +6,7 @@ path(path,'CodeOutput');
 modelName="coloradoGasModel";
 stableTime=4*24*3600;
 % 3 day run time
-stopTime=7*24*3600;
+stopTime=3*24*3600;
 systemPressure=800;
 shutOffPoint=600;
 shutOffDuration=3600;
@@ -31,8 +31,8 @@ set_param(hModel,'SimscapeUseOperatingPoints','off');
 loadState="off";
 % valveControlFlag="initial";
 set_param(modelName,'StopTime',string(conf.StableTime));    % set time to stable with no loads
-sim(modelName);                                     % simulate
-op=simscape.op.create(ans.simlog,stableTime);     % capture ending state as initialization state
+s=sim(modelName);                                     % simulate
+op=simscape.op.create(s.simlog,stableTime);     % capture ending state as initialization state
 set_param(hModel,'SimscapeUseOperatingPoints','on'); % turn on the operating state
 drawnow(); % in case the viewer is open
 
@@ -40,11 +40,10 @@ drawnow(); % in case the viewer is open
 loadState="initial";
 % valveControlFlag="initial";
 s = sim(modelName);                                     % simulate
-op=simscape.op.create(ans.simlog,stableTime);      % capture ending state as initialization state
+op=simscape.op.create(s.simlog,stableTime);      % capture ending state as initialization state
 
 % finally set stop time to handle entire simulation
 loadState="on";
 valveControlFlag="on";
-set_param(modelName,'StopTime',string(conf.StopTime));    % set time to stable with no loads
+set_param(modelName,'StopTime',string(stopTime));    % set time to stable with no loads
 
-%
