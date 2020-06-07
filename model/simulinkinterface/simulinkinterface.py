@@ -20,7 +20,8 @@ class SimulinkInterface:
         self.udp_send_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_send_socket.bind(('', send_port))
         self.logger = Logger('InterfaceLogger', '../logger/logs/interface_log.txt')
-        self.time_oracle = None
+        # Used for sim time oracle which is currently disabled
+        # self.time_oracle = None
 
     def read_config(self, config_path):
         """
@@ -60,10 +61,16 @@ class SimulinkInterface:
             controller_ps = multiprocessing.Process(target=controller.start_plc, daemon=True, name=plc_name)
             self.controller_ps.append(controller_ps)
 
-    def init_time_oracle(self):
-        timer_conf = self.config['time_oracle']
-        time_oracle = simtimeoracle.SimulationTimeOracle(timer_conf['receive_port'], timer_conf['respond_port'])
-        return time_oracle, multiprocessing.Process(target=time_oracle.start, name='Time Oracle', daemon=True)
+    # def init_time_oracle(self):
+    #     """
+    #     Read simtime oracle source for more information, tries to resolve the difference between real
+    #         and simulated time using a pseudo-NTP approach. You can work on this if you'd like to centralize the timer
+    #         to the interface instead of using a virtual PLC (oracle PLC) to manage simulation timestamps.
+    #     :return:
+    #     """
+    #     timer_conf = self.config['time_oracle']
+    #     time_oracle = simtimeoracle.SimulationTimeOracle(timer_conf['receive_port'], timer_conf['respond_port'])
+    #     return time_oracle, multiprocessing.Process(target=time_oracle.start, name='Time Oracle', daemon=True)
 
     # def _accept_connection(self, sock: socket.socket):
     #     """
