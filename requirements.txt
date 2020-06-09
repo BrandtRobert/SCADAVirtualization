@@ -1,0 +1,12 @@
+cycler==0.10.0
+decorator==4.4.2
+kiwisolver==1.2.0
+matplotlib==3.2.1
+networkx==2.4
+numpy==1.18.0
+pymodbus==2.3.0
+pyparsing==2.4.6
+pyserial==3.4
+python-dateutil==2.8.1
+PyYAML==5.2
+six==1.14.0
