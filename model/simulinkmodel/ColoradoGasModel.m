@@ -6,7 +6,7 @@ path(path,'CodeOutput');
 modelName="coloradoGasModel";
 stableTime=4*24*3600;
 % 3 day run time
-stopTime=3*24*3600;
+stopTime=5*24*3600;
 systemPressure=800;
 shutOffPoint=600;
 shutOffDuration=3600;
@@ -16,7 +16,7 @@ hModel=load_system(modelName);
 
 %% Create configuration
 conf=gasConfig();
-[lineParm,conf.UpstreamPressure]=gasLineParameters(conf, systemPressure);
+[lineParm,conf.UpstreamPressure]=gasLineParameters(systemPressure);
 [loadParm,lastLoadChange,plantCapacities]=gasLoadParameters(conf, systemPressure);
 % [valveParm]=gasValveParameters(conf);
 maxCapacity=sum(plantCapacities);

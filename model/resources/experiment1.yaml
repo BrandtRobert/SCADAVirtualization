@@ -22,10 +22,10 @@ main_power_plant:
       type: "DefaultSensor"
       port: 8070
       register: 0
-      compromised:
-        hold_back: 5
-        reading: max(x - (t**.5), 150)
-        after: 3600 # after 1 day of sim time
+#      compromised:
+#        hold_back: 5
+#        reading: max(x - (t**.5), 150)
+#        after: 3600 # after 1 day of sim time
     temperature_sensor:
       type: "DefaultSensor"
       port: 8071

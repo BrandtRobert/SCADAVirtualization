@@ -1,4 +1,4 @@
-function [lineParm,pNom] = gasLineParameters(conf, systemPressure)
+function [lineParm,pNom] = gasLineParameters(systemPressure)
     % Creates the line parameters for the all line segments in the simulation,
     % including valves and other equipment
     
