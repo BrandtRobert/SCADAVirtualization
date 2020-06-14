@@ -20,8 +20,6 @@ conf=gasConfig();
 [loadParm,lastLoadChange,plantCapacities]=gasLoadParameters(conf, systemPressure);
 % [valveParm]=gasValveParameters(conf);
 maxCapacity=sum(plantCapacities);
-shutOffDuration=3600;
-shutOffPoint=600;
 
 systemLoad=loadParm(1,:);
 

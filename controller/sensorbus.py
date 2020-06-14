@@ -37,7 +37,7 @@ class SensorBus:
         self.client_info = {}
         self.register_to_name = {}
         self.data_collector = DataCollector()
-        self.started = False
+        self.start_collecting_data = False
         self._init_sensor_clients(conf)
 
     def _init_sensor_clients(self, conf: Dict):
@@ -56,7 +56,7 @@ class SensorBus:
         i = 0
         for register in registers:
             self.sensors[name][i] = register
-            if self.started:
+            if self.start_collecting_data:
                 sensor_name = self.register_to_name[name + "." + str(i)]
                 self.data_collector.collect_data_item(sensor_name, register)
             i = i+2

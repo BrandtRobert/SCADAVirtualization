@@ -33,7 +33,7 @@ class ColoradoGasModel:
                 # Sim not started yet
                 continue
             else:
-                self.sensor_bus.started = True
+                self.sensor_bus.start_collecting_data = True
             if sim_time >= 259200:
                 # Simulation has ended
                 break

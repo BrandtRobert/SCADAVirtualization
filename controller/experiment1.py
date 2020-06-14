@@ -64,7 +64,7 @@ class Experiment1:
                 break
             # Loop begins once sim time is greater than 0
             # Once the sensor bus is started it will start saving previous data for graphing later on
-            self.sensor_bus.started = True
+            self.sensor_bus.start_collecting_data = True
             main_plant_pressure = \
                 sensors['main_power_plant'][self.worker_info['main_power_plant.pressure_sensor']['register']]
             main_compressor_setting = \
