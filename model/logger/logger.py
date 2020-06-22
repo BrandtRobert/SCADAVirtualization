@@ -7,7 +7,7 @@ import os
 class Logger:
 
     active_loggers = {}
-    # level = logging.DEBUB
+    # level = logging.DEBUG
     level = logging.CRITICAL
     logger_dir = '.'
 
@@ -36,7 +36,9 @@ class Logger:
             logger = logging.getLogger(logger_name)
             # logger.setLevel(logging.DEBUG)
             logger.setLevel(Logger.level)
-            timestr = time.strftime("%Y-%m-%d-%H:%M")
+            # This naming convention breaks in windows
+            # timestr = time.strftime("%Y-%m-%d-%H:%M")
+            timestr = time.strftime("%Y-%m-%d-%H-%M")
             p = pathlib.PurePath(filename)
             parent = p.parent
             name = p.name
