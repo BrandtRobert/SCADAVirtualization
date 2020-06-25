@@ -8,6 +8,28 @@ import selectors
 import socket
 
 
+"""
+    WARNING: a fatal flaw has been discovered in the design of the virtual PLCs and their
+        interactions with the simulink interface. Spawning processes which already have thread
+        objects can lead to undefined behavior. This will lead to a unique error where the 
+        system will fail to run in windows. The reason the system works on unix based systems is
+        the difference between forking and spawning a process. Unix systems will fork processes in 
+        the python multi-processing module. This means that all the state of the current running process
+        is inherited by the new forked process (it is a clone). The state of thread objects is 'unpicklable'
+        so when spawning a process (the behavior in windows) the process will fail as it is not able to transfer
+        the data pertaining to threads contained in the virtual plc.
+        
+    SOLUTIONS?: likely solutions could include:
+        - instead of creating threads for each worker, have a single PLC process handle all the workers in 1 thread
+            or spawn new threads as needed after the PLC process has been created
+        - alternatively you could find a way to spin up threads after the PLC has been created
+            * one possibility is a nested publish subscribe situation
+            * each virtual plc takes data from the select server for each work contained in it
+                the virtual plc then dispatches new data to its respective workers based on the port (data channel)
+                new info is received on. This would require a thread to thread communication mechanism in the 
+                virtual PLC.
+"""
+
 class LogicController:
     def __init__(self, name: str, conf: Dict):
         self.plc_name = name
