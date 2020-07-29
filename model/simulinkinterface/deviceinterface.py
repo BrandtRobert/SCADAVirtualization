@@ -14,6 +14,7 @@ class DeviceInterface:
     def open_connection(self, host, port):
         server = (host, port)
         self.client_socket.connect(server)
+        print("Connected to PLCInterface! Start sending requests: ")
 
     def close_connection(self):
         self.client_socket.close()
@@ -33,8 +34,8 @@ class DeviceInterface:
         if len(r) < 1:
             print("[!] invalid request")
             print("\tsyntax : [w/r,addr,value/size]")
-        elif r.upper() is "EXIT":
-            print("[!] disconnecting from server...")
+        # elif r.upper() is "EXIT":
+        #     print("[!] disconnecting from server...")
         else:
             self.client_socket.sendall(r.encode())
             try:
