@@ -166,10 +166,3 @@ class SimulinkInterface:
             events = self.selector.select()
             for key, mask in events:
                 self.service_connection(key)
-            # blink device
-            # - currently, reg 0 is assigned to turn on the LED at DO#0.0
-            # - this short if statement blinks it on and off
-            if self.device_client.read_regs(0,1) > 0:
-                self.device_client.write_regs(0,0)
-            else:
-                self.device_client.write_regs(0,1)
