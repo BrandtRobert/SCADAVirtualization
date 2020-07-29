@@ -3,13 +3,15 @@ import yaml
 import socket
 from model.datachannels import PublishQueue
 from model.plc import LogicController
-from model.simulinkinterface import simtimeoracle
+from model.simulinkinterface.deviceinterface import DeviceInterface
 import multiprocessing
 import os
 import struct
 import binascii
 from model.logger import Logger
 
+DEVICE_IP = "192.168.0.2"
+DEVICE_PORT = 502
 
 class SimulinkInterface:
     def __init__(self, config_path, send_port=5000):
@@ -20,6 +22,7 @@ class SimulinkInterface:
         self.udp_send_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_send_socket.bind(('', send_port))
         self.logger = Logger('InterfaceLogger', '../logger/logs/interface_log.txt')
+        self.device_client = DeviceInterface(DEVICE_IP, DEVICE_PORT)
         # Used for sim time oracle which is currently disabled
         # self.time_oracle = None
 
@@ -155,7 +158,18 @@ class SimulinkInterface:
             self.logger.info('Starting controller: {}'.format(plc))
             plc.start()
 
+        # attempt a connection to a physical device at the given
+        # - at this moment it is a Siemens S7-1200 PLC
+
+
         while True:
             events = self.selector.select()
             for key, mask in events:
                 self.service_connection(key)
+            # blink device
+            # - currently, reg 0 is assigned to turn on the LED at DO#0.0
+            # - this short if statement blinks it on and off
+            if self.device_client.read_regs(0,1) > 0:
+                self.device_client.write_regs(0,0)
+            else:
+                self.device_client.write_regs(0,1)
