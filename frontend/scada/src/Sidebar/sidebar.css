@@ -1,0 +1,14 @@
+.buttonBody {
+    display: flex;
+    align-content: center;
+}
+
+.sidbarText {
+    font-size: medium;
+    color: black;
+}
+
+.sidbarContent {
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,93 @@
+.connectionStatusConnected {
+    text-align: center;
+    margin: 0 auto;
+    color: springgreen;
+}
+
+.connectionStatusDisconnected {
+    text-align: center;
+    margin: 0 auto;
+    color: red;
+}
+
+.card-body {
+}
+
+.gauges {
+    display: flex;
+    align-items: center;
+    align-content: space-between;
+    width: 300px;
+}
+
+.row-cols-12{
+    width: 520px;
+}
+
+.indicators {
+    display: flex;
+    align-items: center;
+    align-content: space-between;
+}
+
+.plcs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.errorTag {
+    font-size: medium;
+    color: white;
+}
+.col-7 {
+    display: flex;
+}
+
+.plcControlsCard{
+    display: flex;
+    align-items: center;
+    width: 200px;
+}
+.col-5 {
+    width: 250px;
+}
+
+.pressure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: space-between;
+    height: 200px;
+    width: 200px;
+    max-width: 100%;
+}
+
+.pressureRow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 140px;
+    width: 200px;
+}
+
+.temp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: space-between;
+    height: 200px;
+}
+
+.thermo {
+    height: 150px;
+}
+
+.switchRow{
+    width: 180px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-between;
+    justify-content: center;
+}
