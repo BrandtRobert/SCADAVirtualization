@@ -8,5 +8,5 @@ pymodbus==2.3.0
 pyparsing==2.4.6
 pyserial==3.4
 python-dateutil==2.8.1
-PyYAML==5.2
+PyYAML==5.4
 six==1.14.0
