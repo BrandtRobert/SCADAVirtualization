@@ -21,12 +21,12 @@ def read_analog(handle, pin="AIN0"):
     return ljm.eReadName(handle,pin)
 
 def status_print(t, a, s1, s2, err):
-    print("\r----------------------------------"
-              + "\n[{0}] Analog feedback value: {1}".format(t, a)
-              + "\n\t > TDAC0 (value) = [{0}]".format(s1)
-              + "\n\t > TDAC1 (offset) = [{0}]".format(s2)
+    print("\n"*16)
+    print("----------------------------------"
+              + "\n[{0}] Potentiometer value: {1}".format(t, a)
+              + "\n\t > Signal 1: -/+ 1  (TDAC0) = [{0}]".format(s1)
+              + "\n\t > Signal 2: offset (TDAC1) = [{0}]".format(s2)
               + "\n err: {0}".format(err))
-
 # ----- main loops
 
 def read_loop(handle):
