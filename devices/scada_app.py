@@ -17,12 +17,13 @@ print("Hello World, I am the SCADA app."
 # TCP auto connect on first modbus request
 c = ModbusClient(host="192.168.0.241", port=502, unit_id=1)
 
-print("Attempting connection...")
-whi
-conn_status = c.open()
 
-print(conn_status)
+while True:
+    print("Attempting connection...")
+    conn_status = c.open()
+    if conn_status:
+        print("[!] Connection established! Reading data...")
+        regs = c.read_holding_registers(0,2)
+        print(regs)
 
-regs = c.read_holding_registers(0,2)
 
-print(regs)
