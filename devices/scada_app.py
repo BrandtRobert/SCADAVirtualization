@@ -8,46 +8,37 @@ Created on Fri Jul 16 13:38:26 2021
 """
 
 from time import sleep
-from random import uniform
 from pprint import pprint
 
 from pyModbusTCP.client import ModbusClient
 
 # globals
-SERVER_IP = "169.254.153.60"
+SERVER_IP = "10.1.106.200"
 SERVER_PORT = 502
 
+   # Connection-specific DNS Suffix  . : research.colostate.edu
+   # IPv4 Address. . . . . . . . . . . : 10.1.106.86
+   # Subnet Mask . . . . . . . . . . . : 255.255.254.0
+   # Default Gateway . . . . . . . . . : 10.1.106.1
 
 def scada_loop():
     print("Hello World, I am the SCADA app." 
       +"\n[!] I will communicate to devices with Modbus")
 
     
-    # TCP connect on first modbus request
+    # Make a client/master
     client = ModbusClient(host=SERVER_IP, port=SERVER_PORT, unit_id=1)
     
-    t = 0
-    
-    try:
-        print("Attempting connection...")    
-        if not client.is_open():
-            client.open()
-            
-        while client.is_open():
-            client.write_single_register(0, t)
-            regs = client.read_holding_registers(0,8)
-            t += 1
-            pprint(regs)
-            
-            sleep(1)
-            if t >= 100:
-                t = 0
-            
-    except:
-        print("Disconnected from device!\n")
-        sleep(2)
+    while True:
+            try:
+                print("[?] Attempting connection...")
+                status = client.open()
+            except:
+                print("[!] Disconnected from device with error!\n")
+                sleep(2)
+                    
         
-    print("Done.")
+    print("[.] Done.")
 
 if __name__=='__main__':
     scada_loop()
