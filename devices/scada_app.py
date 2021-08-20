@@ -10,11 +10,14 @@ Created on Fri Jul 16 13:38:26 2021
 from time import sleep
 from datetime import datetime
 from pprint import pprint
+from os.path import basename
 
 from threading import Thread, Lock
 from pyModbusTCP.client import ModbusClient
 
 # ----- globals
+
+FILENAME = basename(__file__)
 HORZ_LINE = "---------------------------"
 SERVER_IP = "10.1.106.202"
 SERVER_PORT = 502
@@ -27,6 +30,9 @@ SERVER_PORT = 502
    # check for open IPs: "nmap -sP -PR 10.1.106.*"
 
 # ----- helpers
+
+def debug_print(s):
+    print("{0} : {1}".format(FILENAME, s))
 
 def get_current_time():
     raw_time = datetime.now()
@@ -51,16 +57,16 @@ def option_processing(opt, C):
         sleep(1)
         return -1
 
-# option 1: read Holding_Registers on MB-Server
-#   address range = 40001-50000 ; word(1 byte)
+# - option 1: read Holding_Registers on MB-Server
+# address range = 40001-50000 ; word(1 byte)
 def access_h_regs(C=ModbusClient):
     return -1
     #
     # manipulate registers......
     #
 
-# option 2: read Coils on MB-Server
-#   address range = 0-10000 ; bit
+# - option 2: read Coils on MB-Server
+# address range = 0-10000 ; bit
 def access_coils(C):
     coils = C.read_coils(0, 50)
     print(coils)
