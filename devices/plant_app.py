@@ -58,26 +58,18 @@ def main():
     debug_print("Starting threads for signals...")
 
     
-    try:
-        for i in pins_w_info:
-            th = SignalWorker(args=(i))
-            th.start()
-    except KeyboardInterrupt:
-        debug_print("Keyboard interrupt!\n")
+    jobs = []
+    for i in pins_w_info:
+        thread = SignalWorker(args=(i))
+        jobs.append(thread)
     
-    # - write data to CSV
-    # columns = signal_data[0].keys()
-    # try:
-    #     with open("plant_data_{0}.csv".format(create_filetag()), "w") as csvfile:
-    #         print("Writing to {0}...".format(csvfile.name))
-    #         writer = csv.DictWriter(csvfile, fieldnames=columns)
-    #         writer.writeheader()
-    #         for d in signal_data:
-    #             writer.writerow(signal_data[d])
-    # except IOError as err:
-    #     print("I/O error in CSV writing! ***\n\t{0}".format(err))
+    for j in jobs:
+        j.start()
+        
+    for j in jobs:
+        j.join()
     
-    debug_print("Data saved.")
+    debug_print("Data to be saved.")
     
 
 if __name__ == '__main__':
