@@ -32,6 +32,11 @@ the sensorbus, the datacollector and a series of basic scripts for interacting w
 controllers. If you are building your own simulations and would like to write code to interact
 with the virtual PLCs through modbus reading through this source is good place to start.
 
+#### Devices
+
+This package is still in development. It will contain the interface required for physical devices 
+to communicate with the simulator.
+
 #### Frontend / SCADA 
 
 This package is still in development. Its primary objective is to create a graphical interface
