@@ -9,10 +9,8 @@ Created on Fri Jul 16 13:38:26 2021
 
 from time import sleep
 from datetime import datetime
-from pprint import pprint
 from os.path import basename
 
-from threading import Thread, Lock
 from pyModbusTCP.client import ModbusClient
 
 # ----- globals
