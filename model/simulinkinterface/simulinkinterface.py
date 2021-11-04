@@ -53,9 +53,18 @@ class SimulinkInterface:
             by registering themselves with the publish queue.
         :return:
         """
+        print("# Creating PLCs...")
         for plc_name, plc_config in self.config.items():
             if plc_name == 'time_oracle':
                 continue
+            if plc_config['device_type'] == 'physical':
+                print("\tCreating connection to physical device... ")
+                # show config details
+                print("\tPLC details --- " + str(plc_config['modbus_host']) +
+                      ":" + str(plc_config['modbus_port']))
+                # attempt connection
+                # show result
+                # confirm connection
             controller = LogicController(plc_name, plc_config)
             controller.register_workers(self.selector, self.publish_queue)
             controller_ps = multiprocessing.Process(target=controller.start_plc, daemon=True, name=plc_name)

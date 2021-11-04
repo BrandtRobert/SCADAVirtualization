@@ -46,23 +46,23 @@ main_power_plant:
       respond_to:
         host: "localhost"
         port: 9071
-aux_3:
-  device_type: "virtual"
-  modbus_port: 9092
-  workers:
-    pressure_sensor_of_aux:
-      type: "DefaultSensor"
-      port: 8074
-      register: 0
 #aux_3:
-#  device_type: "physical"
-#  modbus_host: "192.168.0.1"
+#  device_type: "virtual"
 #  modbus_port: 9092
 #  workers:
 #    pressure_sensor_of_aux:
 #      type: "DefaultSensor"
 #      port: 8074
 #      register: 0
+aux_3:
+  device_type: "physical"
+  modbus_host: "192.168.0.1"
+  modbus_port: 9092
+  workers:
+    pressure_sensor_of_aux:
+      type: "DefaultSensor"
+      port: 8074
+      register: 0
 oracle:
   device_type: "virtual"
   modbus_port: 9097
