@@ -1,4 +1,5 @@
 main_compressor_plc:
+  device_type: "virtual"
   modbus_port: 9090
   workers:
     pressure_sensor:
@@ -16,6 +17,7 @@ main_compressor_plc:
         host: "localhost"
         port: 9069
 main_power_plant:
+  device_type: "virtual"
   modbus_port: 9091
   workers:
     pressure_sensor:
@@ -44,7 +46,17 @@ main_power_plant:
       respond_to:
         host: "localhost"
         port: 9071
+#aux_3:
+#  device_type: "virtual"
+#  modbus_port: 9092
+#  workers:
+#    pressure_sensor_of_aux:
+#      type: "DefaultSensor"
+#      port: 8074
+#      register: 0
 aux_3:
+  device_type: "physical"
+  modbus_host: "192.168.0.1"
   modbus_port: 9092
   workers:
     pressure_sensor_of_aux:
@@ -52,6 +64,7 @@ aux_3:
       port: 8074
       register: 0
 oracle:
+  device_type: "virtual"
   modbus_port: 9097
   workers:
     timer:

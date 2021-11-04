@@ -2,7 +2,7 @@
 %% setup model and directory paths
 path(path,'CodeSimulation'); 
 path(path,'CodeOutput'); 
-modelName='Experiment1';
+modelName='experiment1';
 model=load_system(modelName);
 
 %% start simulation with loads off to reach initial state?
